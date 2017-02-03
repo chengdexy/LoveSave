@@ -14,6 +14,7 @@ namespace LoveSaveDo
 {
     public partial class Form1 : Form
     {
+        #region 常量
         private const int TheFristOne = 0;
         private const int validItemIndexBegins = 3;
         private const string breakToItems = "<div class=\"item\">.*?(?=<div class=\"item\">)";
@@ -24,6 +25,7 @@ namespace LoveSaveDo
         private const string findCommentName = "(?<=>\\s*)\\S.*?\\S(?=\\s*</a>)";
         private const string findCommentTime = "(?<=<span class=\"t_date\">)\\d{4}年\\d\\d月\\d\\d日\\s\\d\\d:\\d\\d(?=</span>)";
         private const string findCommentContent = "(?<=</a>\\s*)\\S.*?\\S(?=\\s*<div)";
+        #endregion
 
         private string strResource;
         private MatchCollection mc;
