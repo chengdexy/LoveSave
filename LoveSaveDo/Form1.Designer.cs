@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.btnOpen = new System.Windows.Forms.Button();
-            this.btnCheck = new System.Windows.Forms.Button();
+            this.btnNext = new System.Windows.Forms.Button();
             this.gb = new System.Windows.Forms.GroupBox();
             this.txtItemContent = new System.Windows.Forms.TextBox();
             this.txtItemTime = new System.Windows.Forms.TextBox();
@@ -43,6 +43,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.lblName = new System.Windows.Forms.Label();
             this.ofdOpen = new System.Windows.Forms.OpenFileDialog();
+            this.btnLast = new System.Windows.Forms.Button();
+            this.btnGo = new System.Windows.Forms.Button();
+            this.txtIndex = new System.Windows.Forms.TextBox();
+            this.lblCount = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.gb.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvComments)).BeginInit();
             this.SuspendLayout();
@@ -57,15 +62,15 @@
             this.btnOpen.UseVisualStyleBackColor = true;
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
-            // btnCheck
+            // btnNext
             // 
-            this.btnCheck.Location = new System.Drawing.Point(81, 0);
-            this.btnCheck.Name = "btnCheck";
-            this.btnCheck.Size = new System.Drawing.Size(75, 23);
-            this.btnCheck.TabIndex = 1;
-            this.btnCheck.Text = ">>>";
-            this.btnCheck.UseVisualStyleBackColor = true;
-            this.btnCheck.Click += new System.EventHandler(this.btnCheck_Click);
+            this.btnNext.Location = new System.Drawing.Point(581, 12);
+            this.btnNext.Name = "btnNext";
+            this.btnNext.Size = new System.Drawing.Size(29, 23);
+            this.btnNext.TabIndex = 1;
+            this.btnNext.Text = ">";
+            this.btnNext.UseVisualStyleBackColor = true;
+            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
             // gb
             // 
@@ -180,15 +185,66 @@
             // 
             // ofdOpen
             // 
-            this.ofdOpen.Filter = "HTML|*.html|HTM|*.htm|TEXT|*.txt";
+            this.ofdOpen.Filter = "HTM|*.htm|HTML|*.html|TEXT|*.txt";
+            // 
+            // btnLast
+            // 
+            this.btnLast.Location = new System.Drawing.Point(448, 12);
+            this.btnLast.Name = "btnLast";
+            this.btnLast.Size = new System.Drawing.Size(29, 23);
+            this.btnLast.TabIndex = 3;
+            this.btnLast.Text = "<";
+            this.btnLast.UseVisualStyleBackColor = true;
+            this.btnLast.Click += new System.EventHandler(this.btnLast_Click);
+            // 
+            // btnGo
+            // 
+            this.btnGo.Location = new System.Drawing.Point(546, 12);
+            this.btnGo.Name = "btnGo";
+            this.btnGo.Size = new System.Drawing.Size(29, 23);
+            this.btnGo.TabIndex = 4;
+            this.btnGo.Text = "Go";
+            this.btnGo.UseVisualStyleBackColor = true;
+            this.btnGo.Click += new System.EventHandler(this.btnGo_Click);
+            // 
+            // txtIndex
+            // 
+            this.txtIndex.Location = new System.Drawing.Point(483, 14);
+            this.txtIndex.Name = "txtIndex";
+            this.txtIndex.Size = new System.Drawing.Size(22, 21);
+            this.txtIndex.TabIndex = 5;
+            // 
+            // lblCount
+            // 
+            this.lblCount.AutoSize = true;
+            this.lblCount.Location = new System.Drawing.Point(511, 17);
+            this.lblCount.Name = "lblCount";
+            this.lblCount.Size = new System.Drawing.Size(29, 12);
+            this.lblCount.TabIndex = 6;
+            this.lblCount.Text = "/999";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(94, 0);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(638, 474);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.lblCount);
+            this.Controls.Add(this.txtIndex);
+            this.Controls.Add(this.btnGo);
+            this.Controls.Add(this.btnLast);
             this.Controls.Add(this.gb);
-            this.Controls.Add(this.btnCheck);
+            this.Controls.Add(this.btnNext);
             this.Controls.Add(this.btnOpen);
             this.Name = "Form1";
             this.Text = "LoveSave";
@@ -196,13 +252,14 @@
             this.gb.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvComments)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Button btnOpen;
-        private System.Windows.Forms.Button btnCheck;
+        private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.GroupBox gb;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DataGridView dgvComments;
@@ -216,6 +273,11 @@
         private System.Windows.Forms.TextBox txtItemContent;
         private System.Windows.Forms.TextBox txtItemTime;
         private System.Windows.Forms.TextBox txtNickName;
+        private System.Windows.Forms.Button btnLast;
+        private System.Windows.Forms.Button btnGo;
+        private System.Windows.Forms.TextBox txtIndex;
+        private System.Windows.Forms.Label lblCount;
+        private System.Windows.Forms.Button button1;
     }
 }
 

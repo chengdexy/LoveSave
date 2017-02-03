@@ -20,7 +20,7 @@ namespace LoveSaveDo
         private const string breakToItems = "<div class=\"item\">.*?(?=<div class=\"item\">)";
         private const string findNickName = "(?<=<span class=\"username ellipsis_1\">).*?(?=</span>)";
         private const string findItemTime = "(?<=<p class=\"t_time\">)\\d{4}年\\d\\d月\\d\\d日\\s\\d\\d:\\d\\d(?=</p>)";
-        private const string findItemContent = "(?<=<div class=\"con_txt\">).*?(?=</div>)";
+        private const string findItemContent = "(?<=<div class=\"con_txt.*?\">\\s*).*?(?=\\s*<)";
         private const string findAllComments = "(?<=<div class=\"comments_content\">).*?(?=</div?)";
         private const string findCommentName = "(?<=>\\s*)\\S.*?\\S(?=\\s*</a>)";
         private const string findCommentTime = "(?<=<span class=\"t_date\">)\\d{4}年\\d\\d月\\d\\d日\\s\\d\\d:\\d\\d(?=</span>)";
@@ -30,6 +30,7 @@ namespace LoveSaveDo
         private string strResource;
         private MatchCollection mc;
         private int indexOfItem = 0;
+        private int CountOfItems = 0;
 
         public Form1()
         {
@@ -43,6 +44,9 @@ namespace LoveSaveDo
             //拆分html文件
             Regex rx = new Regex(breakToItems);
             mc = rx.Matches(strResource);
+            CountOfItems = mc.Count;
+            lblCount.Text = "/" + (CountOfItems - validItemIndexBegins - 1).ToString();
+            txtIndex.Text = indexOfItem.ToString();
             //解析第1个拆分项
             AnalysisItem(mc[validItemIndexBegins]);
         }
@@ -61,6 +65,14 @@ namespace LoveSaveDo
             DateTime itemTime = GetItemTime(itemStr);
             //获取内容
             string itemContent = GetItemContent(itemStr);
+            //如果itemContent为空,则可能是上传图片到相册,尝试获取图片列表
+            if (string.IsNullOrEmpty(itemContent))
+            {
+                //获得此item所包含的图片的**文件名**列表
+                //文件名命名规则为: `indexOfItem_indexOfImgList.jpg`
+                string[] imgList = GetItemImgList(itemStr);
+
+            }
             //获取评论
             Comments[] comment = GetComments(itemStr);
             #endregion
@@ -77,6 +89,27 @@ namespace LoveSaveDo
                 dgvComments.Rows.Add(comment[i].CommentName, comment[i].CommentTime.ToString("yyyy-MM-dd mm:ss"), comment[i].CommentContent);
             }
             #endregion
+        }
+
+        /// <summary>
+        /// 获得一个item中所包含的图片
+        /// 将图片下载后重命名保存在本地
+        /// 并返回由它们本地的文件名组成的文件名列表
+        /// 
+        /// 命名规则: `indexOfItem_indexOfImgList.jpg`
+        /// 
+        /// </summary>
+        /// <param name="itemStr"></param>
+        /// <returns>字符串数组,用于存储所有出现的文件名</returns>
+        private string[] GetItemImgList(string itemStr)
+        {
+            //获得所有符合<img.*?>的子串集合
+            //对每个子串进行分析
+            //如果包含有效的albumid和lloc,则下载它
+            //否则下载url中所指向的图片地址
+            //将下载得到的图片保存为约定的文件名
+            //将文件名存入数组返回
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -115,7 +148,7 @@ namespace LoveSaveDo
         /// <returns>返回值可能为空</returns>
         private static string GetItemContent(string itemStr)
         {
-            return Regex.Matches(itemStr, findItemContent)[TheFristOne].Value;
+            return Regex.Matches(itemStr, findItemContent)[TheFristOne].Value.Trim();
         }
 
         /// <summary>
@@ -155,10 +188,57 @@ namespace LoveSaveDo
             sr.Dispose();
         }
 
-        private void btnCheck_Click(object sender, EventArgs e)
+        private void btnNext_Click(object sender, EventArgs e)
         {
             indexOfItem++;
+            if (indexOfItem > CountOfItems - validItemIndexBegins - 1)
+            {
+                //下标越界
+                indexOfItem = CountOfItems - validItemIndexBegins - 1;
+            }
             AnalysisItem(mc[validItemIndexBegins + indexOfItem]);
+            txtIndex.Text = indexOfItem.ToString();
+        }
+
+        private void btnLast_Click(object sender, EventArgs e)
+        {
+            indexOfItem--;
+            if (indexOfItem < 0)
+            {
+                //下标越界
+                indexOfItem = 0;
+            }
+            AnalysisItem(mc[validItemIndexBegins + indexOfItem]);
+            txtIndex.Text = indexOfItem.ToString();
+        }
+
+        private void btnGo_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtIndex.Text.Trim()))
+            {
+                int index = Convert.ToInt32(txtIndex.Text);
+                if (index < 0)
+                {
+                    index = 0;
+                }
+                else if (index > CountOfItems - validItemIndexBegins - 1)
+                {
+                    index = CountOfItems - validItemIndexBegins - 1;
+                }
+
+                AnalysisItem(mc[index + validItemIndexBegins]);
+                indexOfItem = index;
+            }
+            else
+            {
+                txtIndex.Text = "0";
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Form2 f = new LoveSaveDo.Form2();
+            f.Show();
         }
     }
 }
