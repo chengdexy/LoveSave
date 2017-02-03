@@ -31,18 +31,18 @@
             this.btnOpen = new System.Windows.Forms.Button();
             this.btnCheck = new System.Windows.Forms.Button();
             this.gb = new System.Windows.Forms.GroupBox();
-            this.lblName = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.dgvComments = new System.Windows.Forms.DataGridView();
+            this.txtItemContent = new System.Windows.Forms.TextBox();
+            this.txtItemTime = new System.Windows.Forms.TextBox();
+            this.txtNickName = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.dgvComments = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblName = new System.Windows.Forms.Label();
             this.ofdOpen = new System.Windows.Forms.OpenFileDialog();
-            this.txtNickName = new System.Windows.Forms.TextBox();
-            this.txtItemTime = new System.Windows.Forms.TextBox();
-            this.txtItemContent = new System.Windows.Forms.TextBox();
             this.gb.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvComments)).BeginInit();
             this.SuspendLayout();
@@ -84,32 +84,37 @@
             this.gb.TabStop = false;
             this.gb.Text = "Details";
             // 
-            // lblName
+            // txtItemContent
             // 
-            this.lblName.AutoSize = true;
-            this.lblName.Location = new System.Drawing.Point(22, 31);
-            this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(41, 12);
-            this.lblName.TabIndex = 0;
-            this.lblName.Text = "角色: ";
+            this.txtItemContent.Location = new System.Drawing.Point(57, 58);
+            this.txtItemContent.Multiline = true;
+            this.txtItemContent.Name = "txtItemContent";
+            this.txtItemContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtItemContent.Size = new System.Drawing.Size(253, 51);
+            this.txtItemContent.TabIndex = 7;
             // 
-            // label1
+            // txtItemTime
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(163, 31);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(41, 12);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "时间: ";
+            this.txtItemTime.Location = new System.Drawing.Point(210, 28);
+            this.txtItemTime.Name = "txtItemTime";
+            this.txtItemTime.Size = new System.Drawing.Size(100, 21);
+            this.txtItemTime.TabIndex = 6;
             // 
-            // label2
+            // txtNickName
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(22, 61);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(41, 12);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "内容: ";
+            this.txtNickName.Location = new System.Drawing.Point(57, 28);
+            this.txtNickName.Name = "txtNickName";
+            this.txtNickName.Size = new System.Drawing.Size(100, 21);
+            this.txtNickName.TabIndex = 5;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(22, 112);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(41, 12);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "评论: ";
             // 
             // dgvComments
             // 
@@ -127,15 +132,6 @@
             this.dgvComments.RowTemplate.Height = 23;
             this.dgvComments.Size = new System.Drawing.Size(586, 228);
             this.dgvComments.TabIndex = 3;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(22, 112);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(41, 12);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "评论: ";
             // 
             // Column1
             // 
@@ -155,32 +151,36 @@
             this.Column3.Name = "Column3";
             this.Column3.ReadOnly = true;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(22, 61);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(41, 12);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "内容: ";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(163, 31);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(41, 12);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "时间: ";
+            // 
+            // lblName
+            // 
+            this.lblName.AutoSize = true;
+            this.lblName.Location = new System.Drawing.Point(22, 31);
+            this.lblName.Name = "lblName";
+            this.lblName.Size = new System.Drawing.Size(41, 12);
+            this.lblName.TabIndex = 0;
+            this.lblName.Text = "角色: ";
+            // 
             // ofdOpen
             // 
             this.ofdOpen.Filter = "HTML|*.html|HTM|*.htm|TEXT|*.txt";
-            // 
-            // txtNickName
-            // 
-            this.txtNickName.Location = new System.Drawing.Point(57, 28);
-            this.txtNickName.Name = "txtNickName";
-            this.txtNickName.Size = new System.Drawing.Size(100, 21);
-            this.txtNickName.TabIndex = 5;
-            // 
-            // txtItemTime
-            // 
-            this.txtItemTime.Location = new System.Drawing.Point(210, 28);
-            this.txtItemTime.Name = "txtItemTime";
-            this.txtItemTime.Size = new System.Drawing.Size(100, 21);
-            this.txtItemTime.TabIndex = 6;
-            // 
-            // txtItemContent
-            // 
-            this.txtItemContent.Location = new System.Drawing.Point(57, 58);
-            this.txtItemContent.Multiline = true;
-            this.txtItemContent.Name = "txtItemContent";
-            this.txtItemContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtItemContent.Size = new System.Drawing.Size(253, 51);
-            this.txtItemContent.TabIndex = 7;
             // 
             // Form1
             // 
@@ -191,7 +191,7 @@
             this.Controls.Add(this.btnCheck);
             this.Controls.Add(this.btnOpen);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "LoveSave";
             this.gb.ResumeLayout(false);
             this.gb.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvComments)).EndInit();
