@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.Net;
 
 namespace LoveSaveDo
 {
@@ -16,7 +17,7 @@ namespace LoveSaveDo
     {
         #region 常量
         private const int TheFristOne = 0;
-        private const int validItemIndexBegins = 3;
+        private const int validItemIndexBegins = 4; //默认为3
         private const string breakToItems = "<div class=\"item\">.*?(?=<div class=\"item\">)";
         private const string findNickName = "(?<=<span class=\"username ellipsis_1\">).*?(?=</span>)";
         private const string findItemTime = "(?<=<p class=\"t_time\">)\\d{4}年\\d\\d月\\d\\d日\\s\\d\\d:\\d\\d(?=</p>)";
@@ -25,6 +26,10 @@ namespace LoveSaveDo
         private const string findCommentName = "(?<=>\\s*)\\S.*?\\S(?=\\s*</a>)";
         private const string findCommentTime = "(?<=<span class=\"t_date\">)\\d{4}年\\d\\d月\\d\\d日\\s\\d\\d:\\d\\d(?=</span>)";
         private const string findCommentContent = "(?<=</a>\\s*)\\S.*?\\S(?=\\s*<div)";
+        private const string findItemImages = "<img.*?>";
+        private const string findUrlOfImage = "(?<=url=\").*?(?=\\?\")";
+        private const string findlloc = "(?<=lloc=\").*?(?=\")";
+        private const string findAlbumid = "(?<=albumid=\").*?(?=\")";
         #endregion
 
         private string strResource;
@@ -66,13 +71,12 @@ namespace LoveSaveDo
             //获取内容
             string itemContent = GetItemContent(itemStr);
             //如果itemContent为空,则可能是上传图片到相册,尝试获取图片列表
-            if (string.IsNullOrEmpty(itemContent))
-            {
-                //获得此item所包含的图片的**文件名**列表
-                //文件名命名规则为: `indexOfItem_indexOfImgList.jpg`
-                string[] imgList = GetItemImgList(itemStr);
 
-            }
+            //获得此item所包含的图片的**文件名**列表
+            //文件名命名规则为: `indexOfItem_indexOfImgList.jpg`
+            string[] imgList = GetItemImgList(itemStr);
+            //将图片展示到前台去
+
             //获取评论
             Comments[] comment = GetComments(itemStr);
             #endregion
@@ -103,13 +107,80 @@ namespace LoveSaveDo
         /// <returns>字符串数组,用于存储所有出现的文件名</returns>
         private string[] GetItemImgList(string itemStr)
         {
+            int counter = 0;
+            List<string> list = new List<string>();
+            list.Clear();
             //获得所有符合<img.*?>的子串集合
             //对每个子串进行分析
-            //如果包含有效的albumid和lloc,则下载它
-            //否则下载url中所指向的图片地址
-            //将下载得到的图片保存为约定的文件名
+            foreach (Match match in Regex.Matches(itemStr, findItemImages))
+            {
+                string albumid = "";
+                string lloc = "";
+                string filePath = "";
+                albumid = GetAlbumid(match.Value);
+                lloc = Getlloc(match.Value);
+                //如果不包含有效的albumid和lloc,则
+                if (string.IsNullOrEmpty(albumid) || string.IsNullOrEmpty(lloc))
+                {
+                    //下载url中所指向的图片地址
+                    filePath = GetUrlOfImage(match.Value);
+                }
+                else
+                {
+                    //如果包含有效的albumid和lloc,则下载它
+                    filePath = $"http://group.store.qq.com/sweet/{albumid}/{lloc}/670";
+                }
+                //将下载得到的图片保存为约定的文件名
+                string fileName = DownloadImage(filePath, indexOfItem.ToString() + "_" + counter.ToString());
+                list.Add(fileName);
+                counter++;
+            }
             //将文件名存入数组返回
-            throw new NotImplementedException();
+            return list.ToArray();
+        }
+
+        /// <summary>
+        /// 下载指定url的图片,并保存为指定的文件名
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        private string DownloadImage(string filePath, string filename)
+        {
+            HttpWebRequest request;
+
+            request = WebRequest.Create(filePath) as HttpWebRequest;//picpath,图片地址
+            request.Method = "GET";
+            request.Timeout = 30000;
+            request.AllowAutoRedirect = true;
+            request.ContentType = "image/bmp";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 5.2; rv:11.0) Gecko/20100101 Firefox/11.0";
+            request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+
+                StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("utf-8"));
+                Bitmap sourcebm = new Bitmap(sr.BaseStream);
+                sr.Close();
+                string path = Environment.CurrentDirectory + $"\\imgDownload\\{filename}.jpg";
+                sourcebm.Save(path);//filename 保存地址
+            }
+            return filename;
+        }
+
+        private string GetUrlOfImage(string value)
+        {
+            return Regex.Match(value, findUrlOfImage).Value;
+        }
+
+        private string Getlloc(string value)
+        {
+            return Regex.Match(value, findlloc).Value;
+        }
+
+        private string GetAlbumid(string value)
+        {
+            return Regex.Match(value, findAlbumid).Value;
         }
 
         /// <summary>

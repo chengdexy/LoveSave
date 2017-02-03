@@ -24,7 +24,7 @@ namespace LoveSaveDo
         {
             HttpWebRequest request;
             string filename = "";
-            request = WebRequest.Create("http://group.store.qq.com/sweet/V108jIYd2IjF95/V2t3cxVK1tLulb4xiEL/670") as HttpWebRequest;//picpath,图片地址
+            request = WebRequest.Create("http://group.store.qq.com/sweet/V108jIYd1MvmdO/V2to5eFNr4RUVdQ*4Mn/670") as HttpWebRequest;//picpath,图片地址
             request.Method = "GET";
             request.Timeout = 30000;
             request.AllowAutoRedirect = true;
@@ -37,7 +37,7 @@ namespace LoveSaveDo
                 StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("utf-8"));
                 Bitmap sourcebm = new Bitmap(sr.BaseStream);
                 sr.Close();
-                sourcebm.Save($"imgDownload\\{filename}.jpg");//filename 保存地址
+                sourcebm.Save($"d:\\{filename}.jpg");//filename 保存地址
             }
         }
     }
