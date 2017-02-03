@@ -17,7 +17,7 @@ namespace LoveSaveDo
     {
         #region 常量
         private const int TheFristOne = 0;
-        private const int validItemIndexBegins = 4; //默认为3
+        private const int validItemIndexBegins = 3; //默认为3
         private const string breakToItems = "<div class=\"item\">.*?(?=<div class=\"item\">)";
         private const string findNickName = "(?<=<span class=\"username ellipsis_1\">).*?(?=</span>)";
         private const string findItemTime = "(?<=<p class=\"t_time\">)\\d{4}年\\d\\d月\\d\\d日\\s\\d\\d:\\d\\d(?=</p>)";
@@ -131,8 +131,12 @@ namespace LoveSaveDo
                     filePath = $"http://group.store.qq.com/sweet/{albumid}/{lloc}/670";
                 }
                 //将下载得到的图片保存为约定的文件名
-                string fileName = DownloadImage(filePath, indexOfItem.ToString() + "_" + counter.ToString());
-                list.Add(fileName);
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    //有时候会包含albumid,lloc,url都为空的情况
+                    string fileName = DownloadImage(filePath, indexOfItem.ToString() + "_" + counter.ToString());
+                    list.Add(fileName);
+                }
                 counter++;
             }
             //将文件名存入数组返回
