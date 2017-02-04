@@ -46,7 +46,7 @@ namespace LoveSave
                     //保存内容
                     lblResult.Text = "正在将解析结果保存至数据库...";
                     lblResult.Refresh();
-                    //ana.SaveToDatabase();
+                    ana.SaveToDatabase();
                     //下载图片
                     lblResult.Text = "正在下载涉及的图片...";
                     lblResult.Refresh();
@@ -64,6 +64,11 @@ namespace LoveSave
             sr.Close();
             sr.Dispose();
             return result;
+        }
+
+        private void LoveSaveForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DBhelper.CloseCnxn();
         }
     }
 }

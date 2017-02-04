@@ -221,8 +221,8 @@ namespace LoveSave
             {
                 DBhelper.Save2tbDiaryImage(
                     Index,
-                    ImagePaths[i].Key,
-                    ImagePaths[i].Value);
+                    ImagePaths[i].Value,
+                    ImagePaths[i].Key);
             }
             //评论信息入库
             for (int i = 0; i < Comments.Length; i++)
