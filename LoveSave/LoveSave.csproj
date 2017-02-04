@@ -7,8 +7,8 @@
     <ProjectGuid>{21315B29-B305-4222-95F8-4E5D66B804AC}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LoveSaveDo</RootNamespace>
-    <AssemblyName>LoveSaveDo</AssemblyName>
+    <RootNamespace>LoveSave</RootNamespace>
+    <AssemblyName>LoveSave</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
