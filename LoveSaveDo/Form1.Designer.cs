@@ -47,7 +47,6 @@
             this.btnGo = new System.Windows.Forms.Button();
             this.txtIndex = new System.Windows.Forms.TextBox();
             this.lblCount = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.gb.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvComments)).BeginInit();
             this.SuspendLayout();
@@ -223,22 +222,11 @@
             this.lblCount.TabIndex = 6;
             this.lblCount.Text = "/999";
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(94, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(638, 474);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.lblCount);
             this.Controls.Add(this.txtIndex);
             this.Controls.Add(this.btnGo);
@@ -277,7 +265,6 @@
         private System.Windows.Forms.Button btnGo;
         private System.Windows.Forms.TextBox txtIndex;
         private System.Windows.Forms.Label lblCount;
-        private System.Windows.Forms.Button button1;
     }
 }
 

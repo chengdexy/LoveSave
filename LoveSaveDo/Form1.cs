@@ -16,32 +16,45 @@ namespace LoveSaveDo
     public partial class Form1 : Form
     {
         #region 常量
-        private const int TheFristOne = 0;
-        private const int validItemIndexBegins = 3; //默认为3
-        private const string breakToItems = "<div class=\"item\">.*?(?=<div class=\"item\">)";
-        private const string findNickName = "(?<=<span class=\"username ellipsis_1\">).*?(?=</span>)";
-        private const string findItemTime = "(?<=<p class=\"t_time\">)\\d{4}年\\d\\d月\\d\\d日\\s\\d\\d:\\d\\d(?=</p>)";
-        private const string findItemContent = "(?<=<div class=\"con_txt.*?\">\\s*).*?(?=\\s*<)";
-        private const string findAllComments = "(?<=<div class=\"comments_content\">).*?(?=</div?)";
-        private const string findCommentName = "(?<=>\\s*)\\S.*?\\S(?=\\s*</a>)";
-        private const string findCommentTime = "(?<=<span class=\"t_date\">)\\d{4}年\\d\\d月\\d\\d日\\s\\d\\d:\\d\\d(?=</span>)";
-        private const string findCommentContent = "(?<=</a>\\s*)\\S.*?\\S(?=\\s*<div)";
-        private const string findItemImages = "<img.*?>";
-        private const string findUrlOfImage = "(?<=url=\").*?(?=\\?\")";
-        private const string findlloc = "(?<=lloc=\").*?(?=\")";
-        private const string findAlbumid = "(?<=albumid=\").*?(?=\")";
+        private const int TheFristOne = 0;//取代Magic Number : 0
+        private const int validItemIndexBegins = 3; //从第3项开始为有效数据,这个值是分析html文件得来
         #endregion
 
-        private string strResource;
-        private MatchCollection mc;
-        private int indexOfItem = 0;
-        private int CountOfItems = 0;
+        #region 正则表达式
+        private const string breakToItems = "<div class=\"item\">.*?(?=<div class=\"item\">)";//将html文件粗略拆分为若干个item
+        private const string findNickName = "(?<=<span class=\"username ellipsis_1\">).*?(?=</span>)";//在item中获取此item的作者昵称
+        private const string findItemTime = "(?<=<p class=\"t_time\">)\\d{4}年\\d\\d月\\d\\d日\\s\\d\\d:\\d\\d(?=</p>)";//item的发出时间
+        private const string findItemContent = "(?<=<div class=\"con_txt.*?\">\\s*).*?(?=\\s*<)";//获取item所包含正文
+        private const string findAllComments = "(?<=<div class=\"comments_content\">).*?(?=</div?)";//获取item中的评论部分,拆分为没条评论
+        private const string findCommentName = "(?<=>\\s*)\\S.*?\\S(?=\\s*</a>)";//于评论中提取评论人名
+        private const string findCommentTime = "(?<=<span class=\"t_date\">)\\d{4}年\\d\\d月\\d\\d日\\s\\d\\d:\\d\\d(?=</span>)";//评论中提取评论时间
+        private const string findCommentContent = "(?<=</a>\\s*)\\S.*?\\S(?=\\s*<div)";//评论中提取评论内容
+        private const string findItemImages = "<img.*?>";//提取item中所有<img>标签内容
+        private const string findUrlOfImage = "(?<=url=\").*?(?=\\?\")";//于<img>中提取url属性的值
+        private const string findlloc = "(?<=lloc=\").*?(?=\")";//于<img>中提取lloc属性的值(lloc="xxxx")
+        private const string findAlbumid = "(?<=albumid=\").*?(?=\")";//于<img>中提取albumid属性的值
+        #endregion
 
+        #region 公共变量
+        private string strResource;//存放由html文件提取的所有文本
+        private MatchCollection mc;//第一次拆分html文本后获得的匹配集合
+        private int indexOfItem = 0;//存放当前操作的Match序号
+        private int CountOfItems = 0;//存放集合Match总数量
+        #endregion
+
+        /// <summary>
+        /// Form构造
+        /// </summary>
         public Form1()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// "打开"按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnOpen_Click(object sender, EventArgs e)
         {
             //读入html文件
@@ -57,7 +70,85 @@ namespace LoveSaveDo
         }
 
         /// <summary>
-        /// 解析一个item
+        /// "下一条" 按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            indexOfItem++;
+            if (indexOfItem > CountOfItems - validItemIndexBegins - 1)
+            {
+                //下标越界
+                indexOfItem = CountOfItems - validItemIndexBegins - 1;
+            }
+            AnalysisItem(mc[validItemIndexBegins + indexOfItem]);
+            txtIndex.Text = indexOfItem.ToString();
+        }
+
+        /// <summary>
+        /// "上一条"按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnLast_Click(object sender, EventArgs e)
+        {
+            indexOfItem--;
+            if (indexOfItem < 0)
+            {
+                //下标越界
+                indexOfItem = 0;
+            }
+            AnalysisItem(mc[validItemIndexBegins + indexOfItem]);
+            txtIndex.Text = indexOfItem.ToString();
+        }
+
+        /// <summary>
+        /// "跳转到xx条"按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnGo_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtIndex.Text.Trim()))
+            {
+                int index = Convert.ToInt32(txtIndex.Text);
+                if (index < 0)
+                {
+                    index = 0;
+                }
+                else if (index > CountOfItems - validItemIndexBegins - 1)
+                {
+                    index = CountOfItems - validItemIndexBegins - 1;
+                }
+
+                AnalysisItem(mc[index + validItemIndexBegins]);
+                indexOfItem = index;
+            }
+            else
+            {
+                txtIndex.Text = "0";
+            }
+        }
+
+        /// <summary>
+        /// 打开Open对话框,读取一个html文件,将内容保存在字段strResource中
+        /// </summary>
+        private void ReadHtml()
+        {
+            ofdOpen.ShowDialog();
+            if (!File.Exists(ofdOpen.FileName))
+            {
+                return;
+            }
+            StreamReader sr = new StreamReader(ofdOpen.FileName, Encoding.UTF8);
+            strResource = sr.ReadToEnd();
+            sr.Close();
+            sr.Dispose();
+        }
+
+        /// <summary>
+        /// 解析一个item,这里是程序流程主逻辑
         /// </summary>
         /// <param name="item"></param>
         private void AnalysisItem(Match item)
@@ -70,28 +161,27 @@ namespace LoveSaveDo
             DateTime itemTime = GetItemTime(itemStr);
             //获取内容
             string itemContent = GetItemContent(itemStr);
-            //如果itemContent为空,则可能是上传图片到相册,尝试获取图片列表
-
             //获得此item所包含的图片的**文件名**列表
             //文件名命名规则为: `indexOfItem_indexOfImgList.jpg`
             string[] imgList = GetItemImgList(itemStr);
-            //将图片展示到前台去
 
             //获取评论
             Comments[] comment = GetComments(itemStr);
             #endregion
 
-            #region 输出
+            #region 输出到gui
             //输出到gui
             txtNickName.Text = nickName;
-            txtItemTime.Text = itemTime.ToString("yyyy-MM-dd mm:ss");
+            txtItemTime.Text = itemTime.ToString("yyyy-MM-dd hh:mm");
             txtItemContent.Text = itemContent;
             //输出评论
             dgvComments.Rows.Clear();
             for (int i = 0; i < comment.Length; i++)
             {
-                dgvComments.Rows.Add(comment[i].CommentName, comment[i].CommentTime.ToString("yyyy-MM-dd mm:ss"), comment[i].CommentContent);
+                dgvComments.Rows.Add(comment[i].CommentName, comment[i].CommentTime.ToString("yyyy-MM-dd hh:mm"), comment[i].CommentContent);
             }
+            //将图片展示到前台去
+            //这里未做,就是简单的把imgList数组中的文件名显示
             #endregion
         }
 
@@ -133,7 +223,7 @@ namespace LoveSaveDo
                 //将下载得到的图片保存为约定的文件名
                 if (!string.IsNullOrEmpty(filePath))
                 {
-                    //有时候会包含albumid,lloc,url都为空的情况
+                    //有时候会包含albumid,lloc,url都为空的情况(已证实是抓到了头像图片)
                     string fileName = DownloadImage(filePath, indexOfItem.ToString() + "_" + counter.ToString());
                     list.Add(fileName);
                 }
@@ -172,16 +262,31 @@ namespace LoveSaveDo
             return filename;
         }
 
+        /// <summary>
+        /// 获取img标签中的url属性的值
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private string GetUrlOfImage(string value)
         {
             return Regex.Match(value, findUrlOfImage).Value;
         }
 
+        /// <summary>
+        /// 获取img标签中的lloc属性的值
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private string Getlloc(string value)
         {
             return Regex.Match(value, findlloc).Value;
         }
 
+        /// <summary>
+        /// 获取img标签中的albumid属性的值
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private string GetAlbumid(string value)
         {
             return Regex.Match(value, findAlbumid).Value;
@@ -245,75 +350,6 @@ namespace LoveSaveDo
         private static string GetNickName(string itemStr)
         {
             return Regex.Matches(itemStr, findNickName)[TheFristOne].Value;
-        }
-
-        /// <summary>
-        /// 打开Open对话框,读取一个html文件,将内容保存在字段strResource中
-        /// </summary>
-        private void ReadHtml()
-        {
-            ofdOpen.ShowDialog();
-            if (!File.Exists(ofdOpen.FileName))
-            {
-                return;
-            }
-            StreamReader sr = new StreamReader(ofdOpen.FileName, Encoding.UTF8);
-            strResource = sr.ReadToEnd();
-            sr.Close();
-            sr.Dispose();
-        }
-
-        private void btnNext_Click(object sender, EventArgs e)
-        {
-            indexOfItem++;
-            if (indexOfItem > CountOfItems - validItemIndexBegins - 1)
-            {
-                //下标越界
-                indexOfItem = CountOfItems - validItemIndexBegins - 1;
-            }
-            AnalysisItem(mc[validItemIndexBegins + indexOfItem]);
-            txtIndex.Text = indexOfItem.ToString();
-        }
-
-        private void btnLast_Click(object sender, EventArgs e)
-        {
-            indexOfItem--;
-            if (indexOfItem < 0)
-            {
-                //下标越界
-                indexOfItem = 0;
-            }
-            AnalysisItem(mc[validItemIndexBegins + indexOfItem]);
-            txtIndex.Text = indexOfItem.ToString();
-        }
-
-        private void btnGo_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(txtIndex.Text.Trim()))
-            {
-                int index = Convert.ToInt32(txtIndex.Text);
-                if (index < 0)
-                {
-                    index = 0;
-                }
-                else if (index > CountOfItems - validItemIndexBegins - 1)
-                {
-                    index = CountOfItems - validItemIndexBegins - 1;
-                }
-
-                AnalysisItem(mc[index + validItemIndexBegins]);
-                indexOfItem = index;
-            }
-            else
-            {
-                txtIndex.Text = "0";
-            }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Form2 f = new LoveSaveDo.Form2();
-            f.Show();
         }
     }
 }
