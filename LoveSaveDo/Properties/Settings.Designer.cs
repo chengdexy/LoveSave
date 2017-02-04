@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LoveSaveDo.Properties
+namespace LoveSave.Properties
 {
 
 

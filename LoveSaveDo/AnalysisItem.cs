@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace LoveSaveDo
+namespace LoveSave
 {
     /// <summary>
     /// "解析项目"类
@@ -14,7 +14,6 @@ namespace LoveSaveDo
     class AnalysisItem
     {
         #region 正则
-        private const string breakToItems = "<div class=\"item\">.*?(?=<div class=\"item\">)";//将html文件粗略拆分为若干个item
         private const string findNickName = "(?<=<span class=\"username ellipsis_1\">).*?(?=</span>)";//在item中获取此item的作者昵称
         private const string findItemTime = "(?<=<p class=\"t_time\">)\\d{4}年\\d\\d月\\d\\d日\\s\\d\\d:\\d\\d(?=</p>)";//item的发出时间
         private const string findItemContent = "(?<=<div class=\"con_txt.*?\">\\s*).*?(?=\\s*<)";//获取item所包含正文
@@ -133,7 +132,8 @@ namespace LoveSaveDo
             {
                 string name = Regex.Matches(match.Value, findCommentName)[0].Value;
                 DateTime time = Convert.ToDateTime(Regex.Matches(match.Value, findCommentTime)[0].Value);
-                string content = Regex.Matches(match.Value, findCommentContent)[0].Value;
+                MatchCollection mc = Regex.Matches(match.Value, findCommentContent);
+                string content = mc.Count == 0 ? "" : mc[0].Value;
                 //为每个Match实例化一个Comments对象,并加入List中
                 list.Add(new Comments()
                 {
@@ -156,6 +156,12 @@ namespace LoveSaveDo
         /// <param name="filename">保存为的文件名</param>
         private void DownloadImage(string url, string savePath, string filename)
         {
+            string path = savePath + $"\\{filename}.jpg";
+            if (File.Exists(path))
+            {
+                return;
+            }
+
             HttpWebRequest request;
             request = WebRequest.Create(url) as HttpWebRequest;
             #region 配置请求
@@ -172,7 +178,7 @@ namespace LoveSaveDo
                 StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("utf-8"));
                 Bitmap sourcebm = new Bitmap(sr.BaseStream);
                 sr.Close();
-                string path = savePath + $"\\{filename}.jpg";
+
                 #endregion
                 sourcebm.Save(path);
             }
@@ -233,15 +239,15 @@ namespace LoveSaveDo
         /// 根据实例化后的对象所包含的图片下载地址,
         /// 将图片下载到指定的文件夹,
         /// 并使用指定的文件名来保存
-        /// 下载地址URL - ImagePath[i].Key
-        /// 指定的文件名 - ImagePath[i].Value
+        /// 指定的文件名 - ImagePath[i].Key
+        /// 下载地址URL - ImagePath[i].Value
         /// </summary>
         /// <param name="savePath">指定的保存文件夹</param>
         public void DownloadImagesTo(string savePath)
         {
             for (int i = 0; i < ImagePaths.Length; i++)
             {
-                DownloadImage(ImagePaths[i].Key, savePath, ImagePaths[i].Value);
+                DownloadImage(ImagePaths[i].Value, savePath, ImagePaths[i].Key);
             }
         }
 
