@@ -86,7 +86,8 @@ namespace LoveSave
                     lblResult.Text = "正在保存内容到数据库，并将发现的图片下载到本地...";
                     lblResult.Refresh();
                     CopyDatabaseToResult();
-                    foreach (JToken joData in joChat["data"])
+                    var joDatas = joChat.SelectToken("data").Select(p => p).ToList();
+                    foreach (var joData in joDatas)
                     {
                         ChatItem ci = new ChatItem(joData);
                         ci.SaveToDatabase();
