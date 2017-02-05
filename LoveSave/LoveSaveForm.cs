@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,6 +22,7 @@ namespace LoveSave
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
+            ofdHtml.Filter = "Html文件(*.htm)|*.htm";
             ofdHtml.ShowDialog();
             if (string.IsNullOrEmpty(ofdHtml.FileName))
             {
@@ -33,8 +36,6 @@ namespace LoveSave
                 }
                 else
                 {
-                    btnOpen.Enabled = false;
-                    btnOpen.Visible = false;
                     //读html内容
                     lblResult.Text = "正在读取文件内容...";
                     lblResult.Refresh();
@@ -46,6 +47,7 @@ namespace LoveSave
                     //保存内容
                     lblResult.Text = "正在将解析结果保存至数据库...";
                     lblResult.Refresh();
+                    CopyDatabaseToResult();
                     ana.SaveToDatabase();
                     //下载图片
                     lblResult.Text = "正在下载涉及的图片...";
@@ -56,7 +58,62 @@ namespace LoveSave
                 }
             }
         }
+        private void btnChat_Click(object sender, EventArgs e)
+        {
+            ofdHtml.Filter = "JSON文件(*.json)|*.json";
+            ofdHtml.ShowDialog();
+            if (string.IsNullOrEmpty(ofdHtml.FileName))
+            {
+                return;
+            }
+            else
+            {
+                if (!File.Exists(ofdHtml.FileName))
+                {
+                    return;
+                }
+                else
+                {
+                    //解析内容
+                    lblResult.Text = "正在解析内容...";
+                    lblResult.Refresh();
+                    StreamReader sr = new StreamReader(ofdHtml.FileName, Encoding.Default);
+                    string strJson = sr.ReadToEnd();
 
+                    JObject joChat = JObject.Parse(strJson);
+
+                    //保存内容
+                    lblResult.Text = "正在保存内容到数据库，并将发现的图片下载到本地...";
+                    lblResult.Refresh();
+                    CopyDatabaseToResult();
+                    foreach (JToken joData in joChat["data"])
+                    {
+                        ChatItem ci = new ChatItem(joData);
+                        ci.SaveToDatabase();
+                        //下载图片（如果有）
+                        if (ci.hasImage())
+                        {
+                            ci.DownloadImageTo(Environment.CurrentDirectory + "\\Result\\ChatImage\\");
+                        }
+                    }
+                    DBhelper.CloseCnxn();
+                    //打开文件夹供查看
+                    lblResult.Text = "全部工作已完成...";
+                }
+            }
+        }
+
+        private void CopyDatabaseToResult()
+        {
+            #region 复制数据库文件
+            if (!Directory.Exists(Environment.CurrentDirectory + "\\Result"))
+            {
+                Directory.CreateDirectory(Environment.CurrentDirectory + "\\Result");
+            }
+            File.Copy(Environment.CurrentDirectory + "\\Data.mdb", Environment.CurrentDirectory + "\\Result\\Data.mdb", true);
+            #endregion
+
+        }
         private string ReadHtml(string fileName)
         {
             StreamReader sr = new StreamReader(fileName, Encoding.UTF8);
@@ -65,10 +122,10 @@ namespace LoveSave
             sr.Dispose();
             return result;
         }
-
         private void LoveSaveForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             DBhelper.CloseCnxn();
         }
+
     }
 }

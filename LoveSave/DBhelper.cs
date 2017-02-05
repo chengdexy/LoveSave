@@ -76,6 +76,13 @@ namespace LoveSave
                            $" values({index},'{commentName}',#{commentTime }#,'{commentContent}')";
             ExecuteNonQuery(strsql);
         }
+
+        public static void Save2tbChat(string name, DateTime time, string content, string imgUrl, bool hasImage, string fileName)
+        {
+            string strsql = "insert into tbChat(ct_name,ct_time,ct_content,ct_imgUrl,ct_hasImage,ct_fileName)" +
+                           $" values('{name}',#{time}#,'{content}','{imgUrl}',{hasImage},'{fileName }')";
+            ExecuteNonQuery(strsql);
+        }
         #endregion
     }
 }

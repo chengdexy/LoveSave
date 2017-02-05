@@ -46,13 +46,6 @@ namespace LoveSave
         #region 方法
         public void SaveToDatabase()
         {
-            #region 复制数据库文件
-            if (!Directory.Exists(Environment.CurrentDirectory + "\\Result"))
-            {
-                Directory.CreateDirectory(Environment.CurrentDirectory + "\\Result");
-            }
-            File.Copy(Environment.CurrentDirectory + "\\Data.mdb", Environment.CurrentDirectory + "\\Result\\Data.mdb", true);
-            #endregion
             for (int i = 0; i < Items.Length; i++)
             {
                 Items[i].SaveToDatabase();
