@@ -61,6 +61,7 @@
     <Compile Include="LoveSaveForm.Designer.cs">
       <DependentUpon>LoveSaveForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Memos.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="LoveSaveForm.resx">

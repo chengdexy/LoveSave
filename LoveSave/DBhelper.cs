@@ -83,6 +83,13 @@ namespace LoveSave
                            $" values('{name}',#{time}#,'{content}','{imgUrl}',{hasImage},'{fileName }')";
             ExecuteNonQuery(strsql);
         }
+
+        public static void Save2tbMemos(string name, int year, int month, int day, bool lunar)
+        {
+            string strsql = "insert into tbMemos(m_name,m_year,m_month,m_day,m_lunar)" +
+                           $" values('{name}',{year},{month},{day},{lunar})";
+            ExecuteNonQuery(strsql);
+        }
         #endregion
     }
 }

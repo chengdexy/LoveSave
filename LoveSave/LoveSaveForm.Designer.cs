@@ -39,10 +39,12 @@
             this.btnChat = new System.Windows.Forms.Button();
             this.subtabComemorate = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnMemos = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabMain.SuspendLayout();
             this.subtabItem.SuspendLayout();
             this.subtabChat.SuspendLayout();
+            this.subtabComemorate.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -132,6 +134,7 @@
             // 
             // subtabComemorate
             // 
+            this.subtabComemorate.Controls.Add(this.btnMemos);
             this.subtabComemorate.Location = new System.Drawing.Point(4, 28);
             this.subtabComemorate.Name = "subtabComemorate";
             this.subtabComemorate.Padding = new System.Windows.Forms.Padding(3);
@@ -148,6 +151,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(399, 55);
             this.panel1.TabIndex = 5;
+            // 
+            // btnMemos
+            // 
+            this.btnMemos.Location = new System.Drawing.Point(69, 12);
+            this.btnMemos.Margin = new System.Windows.Forms.Padding(4);
+            this.btnMemos.Name = "btnMemos";
+            this.btnMemos.Size = new System.Drawing.Size(152, 29);
+            this.btnMemos.TabIndex = 4;
+            this.btnMemos.Text = "选择要解析的文件";
+            this.btnMemos.UseVisualStyleBackColor = true;
             // 
             // LoveSaveForm
             // 
@@ -166,6 +179,7 @@
             this.tabMain.ResumeLayout(false);
             this.subtabItem.ResumeLayout(false);
             this.subtabChat.ResumeLayout(false);
+            this.subtabComemorate.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -184,5 +198,6 @@
         private System.Windows.Forms.Button btnChat;
         private System.Windows.Forms.TabPage subtabComemorate;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button btnMemos;
     }
 }
