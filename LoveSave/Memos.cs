@@ -98,7 +98,7 @@ namespace LoveSave
         {
             _name = name;
             Lunar = lunar;
-            _date = $"{year.ToString()}-{month.ToString()}-{day.ToString()}";
+            _date = $"{year.ToString("0000")}-{month.ToString("00")}-{day.ToString("00")}";
         }
 
         public void SaveToDatabase()

@@ -15,6 +15,8 @@ namespace LoveSave
 {
     public partial class LoveSaveForm : Form
     {
+        private static bool DatabaseCopied = false;
+
         public LoveSaveForm()
         {
             InitializeComponent();
@@ -52,9 +54,10 @@ namespace LoveSave
                     //下载图片
                     lblResult.Text = "正在下载涉及的图片...";
                     lblResult.Refresh();
-                    ana.DownloadImagesTo(Environment.CurrentDirectory + "\\Result\\Images");
+                    ana.DownloadImagesTo( "Result\\Images");
                     lblResult.Text = "全部工作已完成!";
                     //打开文件夹供查看
+                    System.Diagnostics.Process.Start("explorer.exe",  "Result\\");
                 }
             }
         }
@@ -94,26 +97,83 @@ namespace LoveSave
                         //下载图片（如果有）
                         if (ci.hasImage())
                         {
-                            ci.DownloadImageTo(Environment.CurrentDirectory + "\\Result\\ChatImage\\");
+                            ci.DownloadImageTo("Result\\ChatImage\\");
                         }
                     }
                     DBhelper.CloseCnxn();
                     //打开文件夹供查看
-                    lblResult.Text = "全部工作已完成...";
+                    lblResult.Text = "全部工作已完成!";
+                    System.Diagnostics.Process.Start("explorer.exe", "Result\\");
+                }
+            }
+        }
+        private void btnMemos_Click(object sender, EventArgs e)
+        {
+            ofdHtml.Filter = "JSON文件(*.json)|*.json";
+            ofdHtml.ShowDialog();
+            if (string.IsNullOrEmpty(ofdHtml.FileName))
+            {
+                return;
+            }
+            else
+            {
+                if (!File.Exists(ofdHtml.FileName))
+                {
+                    return;
+                }
+                else
+                {
+                    //解析内容
+                    lblResult.Text = "正在解析内容...";
+                    lblResult.Refresh();
+                    StreamReader sr = new StreamReader(ofdHtml.FileName, Encoding.Default);
+                    string strJson = sr.ReadToEnd();
+
+                    JObject joChat = JObject.Parse(strJson);
+
+                    //保存内容
+                    lblResult.Text = "正在保存内容到数据库...";
+                    lblResult.Refresh();
+                    CopyDatabaseToResult();
+                    var joDatas = joChat.SelectToken("memos").Select(p => p).ToList();
+                    foreach (var joData in joDatas)
+                    {
+                        string time = joData["time"].ToString();
+                        int year = Convert.ToInt32(time.Substring(0, 4));
+                        int month = Convert.ToInt32(time.Substring(5, 2));
+                        int day = Convert.ToInt32(time.Substring(8, 2));
+                        Memos mm = new Memos(
+                            joData["name"].ToString(),
+                            year, month, day,
+                            joData["lunar"].ToString().Trim() == "1" ? true : false
+                            );
+                        mm.SaveToDatabase();
+                    }
+                    DBhelper.CloseCnxn();
+                    //打开文件夹供查看
+                    lblResult.Text = "全部工作已完成!";
+                    System.Diagnostics.Process.Start("explorer.exe", "Result\\");
                 }
             }
         }
 
         private void CopyDatabaseToResult()
         {
-            #region 复制数据库文件
-            if (!Directory.Exists(Environment.CurrentDirectory + "\\Result"))
+            if (DatabaseCopied)
             {
-                Directory.CreateDirectory(Environment.CurrentDirectory + "\\Result");
+                return;
             }
-            File.Copy(Environment.CurrentDirectory + "\\Data.mdb", Environment.CurrentDirectory + "\\Result\\Data.mdb", true);
-            #endregion
-
+            else
+            {
+                #region 复制数据库文件
+                if (!Directory.Exists( "Result"))
+                {
+                    Directory.CreateDirectory( "Result");
+                }
+                File.Copy( "Data.mdb", "Result\\Data.mdb", true);
+                DatabaseCopied = true;
+                #endregion
+            }
         }
         private string ReadHtml(string fileName)
         {

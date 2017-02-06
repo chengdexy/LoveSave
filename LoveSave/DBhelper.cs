@@ -11,7 +11,7 @@ namespace LoveSave
     static class DBhelper
     {
         #region 静态字段
-        private static string ConnectionString = $"Provider=Microsoft.Jet.Oledb.4.0;Data Source={Environment.CurrentDirectory}\\Result\\Data.mdb";
+        private static string ConnectionString = $"Provider=Microsoft.Jet.Oledb.4.0;Data Source=Result\\Data.mdb";
         private static OleDbConnection cnxn = new OleDbConnection();
         private static OleDbCommand cmd = new OleDbCommand();
         #endregion
