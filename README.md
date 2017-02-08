@@ -85,11 +85,9 @@ QQ情侣空间的Android版app停止维护2年了,无法在Android5.0以上的�
 2. 登录后自动触发"查看更多"的问题(Done 找到get请求,及相关参数)
 3. 页面加载了所有日志之后抓取html代码用于解析日志
     - 找到了更好的解析资源:上述get请求反回的json文件.
-        - ~~如何解析html文件?**(Done)** 
-            - `AnalysisItem类`
-            - `AnalysisItem item=new AnalysisItem(str);`
+        ~~如何解析html文件?**(Done)**`AnalysisItem类``AnalysisItem item=new AnalysisItem(str);`~~
             - `item.SaveToDatabase();`
-            - `item.DownloadImages();`~~
+            - `item.DownloadImages();`
     - 图片下载完毕后如何调用查看?
         - 将用户指定的Path保存入数据库 `Analysis类`
         - `Analysis ana=new Analysis(html,path);`
