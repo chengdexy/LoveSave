@@ -93,7 +93,6 @@
   <ItemGroup>
     <Compile Include="ChatItem.cs" />
     <Compile Include="Comment.cs" />
-    <Compile Include="Comments.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="DateHelper.cs" />
     <Compile Include="DBhelper.cs" />
