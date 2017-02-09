@@ -96,7 +96,7 @@ namespace LoveSave
         }
         public void Download()
         {
-            string path = Constant.ImageDownloadPath + $"\\{FileName}.jpg";
+            string path = Constant.DiaryImageDownloadPath + $"\\{FileName}.jpg";
             if (File.Exists(path))
             {
                 return;

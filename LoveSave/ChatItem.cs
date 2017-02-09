@@ -13,8 +13,6 @@ namespace LoveSave
 {
     class ChatItem
     {
-        private const string findImgUrl = "(?<=url\":\").*?(?=\",)";
-
         private string _qqNumber;   //QQ号
         private string _unix;       //时间戳
         private string _content;    //内容
@@ -69,7 +67,7 @@ namespace LoveSave
             if (jt["richval"].ToString().Contains("\"type\":\"image\""))
             {
                 string str = jt["richval"].ToString();
-                _imgUrl = Regex.Match(str, findImgUrl).Value + "670";
+                _imgUrl = Regex.Match(str, Constant.findUrlInRichval).Value + "670";
             }
             _imgFileName = Guid.NewGuid().ToString();
         }

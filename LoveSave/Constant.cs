@@ -8,10 +8,13 @@ namespace LoveSave
 {
     static class Constant
     {
-        public const string findUrlInRichval = "<?<=\"url\":\">.*?<?=\">";  //<?<="url":">.*?<?=">
-        public const string findLloclistInRichval = "<?<=\"lloclist\":\">.*?<?=\">"; //<?<="lloclist":">.*?<?=">
-        public const string splitRichvalToImageInfos = "<?<={>.*?<?=}>";  //<?<={>.*?<?=}>
-
-        public const string ImageDownloadPath = "Result\\DiaryImage\\";
+        #region 正则表达式
+        public const string splitRichvalToImageInfos = "(?<={).*?(?=})";                //(?<={).*?(?=})
+        public const string findUrlInRichval = "(?<=url\":\").*?(?=\")";                //(?<="url":").*?(?=")
+        public const string findLloclistInRichval = "(?<=\"lloclist\":\").*?(?=\")";    //(?<="lloclist":").*?(?=")
+        #endregion
+        #region 存储路径
+        public const string DiaryImageDownloadPath = "Result\\DiaryImage\\";
+        #endregion
     }
 }
