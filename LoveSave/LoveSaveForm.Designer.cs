@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoveSaveForm));
             this.ofdHtml = new System.Windows.Forms.OpenFileDialog();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.btnOpen = new System.Windows.Forms.Button();
+            this.btnDiary = new System.Windows.Forms.Button();
             this.lblResult = new System.Windows.Forms.Label();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.subtabItem = new System.Windows.Forms.TabPage();
@@ -63,15 +63,15 @@
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
-            // btnOpen
+            // btnDiary
             // 
-            this.btnOpen.Location = new System.Drawing.Point(48, 10);
-            this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(114, 23);
-            this.btnOpen.TabIndex = 2;
-            this.btnOpen.Text = "选择要解析的文件";
-            this.btnOpen.UseVisualStyleBackColor = true;
-            this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
+            this.btnDiary.Location = new System.Drawing.Point(48, 10);
+            this.btnDiary.Name = "btnDiary";
+            this.btnDiary.Size = new System.Drawing.Size(114, 23);
+            this.btnDiary.TabIndex = 2;
+            this.btnDiary.Text = "选择要解析的文件";
+            this.btnDiary.UseVisualStyleBackColor = true;
+            this.btnDiary.Click += new System.EventHandler(this.btnDiary_Click);
             // 
             // lblResult
             // 
@@ -99,7 +99,7 @@
             // 
             // subtabItem
             // 
-            this.subtabItem.Controls.Add(this.btnOpen);
+            this.subtabItem.Controls.Add(this.btnDiary);
             this.subtabItem.Location = new System.Drawing.Point(4, 25);
             this.subtabItem.Margin = new System.Windows.Forms.Padding(2);
             this.subtabItem.Name = "subtabItem";
@@ -190,7 +190,7 @@
 
         private System.Windows.Forms.OpenFileDialog ofdHtml;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Button btnOpen;
+        private System.Windows.Forms.Button btnDiary;
         private System.Windows.Forms.Label lblResult;
         private System.Windows.Forms.TabControl tabMain;
         private System.Windows.Forms.TabPage subtabItem;

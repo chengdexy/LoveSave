@@ -91,11 +91,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analysis.cs" />
-    <Compile Include="AnalysisItem.cs" />
     <Compile Include="ChatItem.cs" />
+    <Compile Include="Comment.cs" />
     <Compile Include="Comments.cs" />
+    <Compile Include="Constant.cs" />
+    <Compile Include="DateHelper.cs" />
     <Compile Include="DBhelper.cs" />
+    <Compile Include="Diary.cs" />
+    <Compile Include="ImageInfo.cs" />
+    <Compile Include="JsonHelper.cs" />
     <Compile Include="LoveSaveForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -105,6 +109,8 @@
     <Compile Include="Memos.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegexHelper.cs" />
+    <Compile Include="Reply.cs" />
     <EmbeddedResource Include="LoveSaveForm.resx">
       <DependentUpon>LoveSaveForm.cs</DependentUpon>
     </EmbeddedResource>

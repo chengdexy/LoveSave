@@ -22,44 +22,30 @@ namespace LoveSave
             InitializeComponent();
         }
 
-        private void btnOpen_Click(object sender, EventArgs e)
+        private void btnDiary_Click(object sender, EventArgs e)
         {
-            ofdHtml.Filter = "Html文件(*.htm)|*.htm";
+            ofdHtml.Filter = "JSON文件(*.json)|*.json";
             ofdHtml.ShowDialog();
             if (string.IsNullOrEmpty(ofdHtml.FileName))
             {
                 return;
             }
-            else
+            if (!File.Exists(ofdHtml.FileName))
             {
-                if (!File.Exists(ofdHtml.FileName))
-                {
-                    return;
-                }
-                else
-                {
-                    //读html内容
-                    lblResult.Text = "正在读取文件内容...";
-                    lblResult.Refresh();
-                    string strResource = ReadHtml(ofdHtml.FileName);
-                    //解析内容
-                    lblResult.Text = "正在解析文件内容...";
-                    lblResult.Refresh();
-                    Analysis ana = new Analysis(strResource);
-                    //保存内容
-                    lblResult.Text = "正在将解析结果保存至数据库...";
-                    lblResult.Refresh();
-                    CopyDatabaseToResult();
-                    ana.SaveToDatabase();
-                    //下载图片
-                    lblResult.Text = "正在下载涉及的图片...";
-                    lblResult.Refresh();
-                    ana.DownloadImagesTo( "Result\\Images");
-                    lblResult.Text = "全部工作已完成!";
-                    //打开文件夹供查看
-                    System.Diagnostics.Process.Start("explorer.exe",  "Result\\");
-                }
+                return;
             }
+            lblResult.Text = "正在保存内容到数据库，并将发现的图片下载到本地...";
+            lblResult.Refresh();
+            CopyDatabaseToResult();
+            //解析并保存内容
+            JsonHelper.JsonToObjectCollection(ofdHtml.FileName, "data", Encoding.Default).ForEach(joData =>
+            {
+                new Diary(joData).Save();
+            });
+            DBhelper.CloseCnxn();
+            //打开文件夹供查看
+            lblResult.Text = "全部工作已完成!";
+            System.Diagnostics.Process.Start("explorer.exe", "Result\\");
         }
         private void btnChat_Click(object sender, EventArgs e)
         {
@@ -166,11 +152,11 @@ namespace LoveSave
             else
             {
                 #region 复制数据库文件
-                if (!Directory.Exists( "Result"))
+                if (!Directory.Exists("Result"))
                 {
-                    Directory.CreateDirectory( "Result");
+                    Directory.CreateDirectory("Result");
                 }
-                File.Copy( "Data.mdb", "Result\\Data.mdb", true);
+                File.Copy("Data.mdb", "Result\\Data.mdb", true);
                 DatabaseCopied = true;
                 #endregion
             }
