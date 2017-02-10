@@ -205,7 +205,8 @@ namespace LoveSave
         private void button1_Click(object sender, EventArgs e)
         {
             //获取diary记录总数
-            GetDiaryTotalCount();
+            DiaryTotal = GetDiaryTotalCount();
+            Debug.Print($"Analysis successful!\ng_tk:{g_tk},uin:{uin},total:{DiaryTotal}");
             //获取所有diary记录的json文件
             //获取所有chat记录的json文件
             //获取所有memos记录的json文件
@@ -215,7 +216,7 @@ namespace LoveSave
         {
             string total = "";
             webBrowser1.Navigate($"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_share_getbyhouse?g_tk={g_tk}&uin={uin}&start=0&num=1&opuin={uin}&plat=0&outputformat=2");
-            while (DiaryTotal == "")
+            while (total == "")
             {
                 Application.DoEvents();
                 total = RegexHelper.GetMatch(webBrowser1.DocumentText, "(?<=\"total\":)\\d*?(?=,)");
