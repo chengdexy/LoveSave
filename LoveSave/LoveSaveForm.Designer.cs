@@ -40,6 +40,8 @@
             this.subtabComemorate = new System.Windows.Forms.TabPage();
             this.btnMemos = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabMain.SuspendLayout();
             this.subtabItem.SuspendLayout();
@@ -163,11 +165,35 @@
             this.panel1.Size = new System.Drawing.Size(300, 45);
             this.panel1.TabIndex = 5;
             // 
+            // webBrowser1
+            // 
+            this.webBrowser1.Location = new System.Drawing.Point(335, 7);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.ScriptErrorsSuppressed = true;
+            this.webBrowser1.Size = new System.Drawing.Size(332, 283);
+            this.webBrowser1.TabIndex = 6;
+            this.webBrowser1.Url = new System.Uri("http://sweet.snsapp.qq.com", System.UriKind.Absolute);
+            this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
+            // 
+            // button1
+            // 
+            this.button1.Enabled = false;
+            this.button1.Location = new System.Drawing.Point(43, 150);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(196, 96);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "关键参数已捕获,点我开始解析";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // LoveSaveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(320, 136);
+            this.ClientSize = new System.Drawing.Size(679, 320);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.webBrowser1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.tabMain);
             this.Controls.Add(this.pictureBox1);
@@ -175,6 +201,7 @@
             this.Name = "LoveSaveForm";
             this.Text = "LoveSave";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoveSaveForm_FormClosing);
+            this.Load += new System.EventHandler(this.LoveSaveForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tabMain.ResumeLayout(false);
             this.subtabItem.ResumeLayout(false);
@@ -199,5 +226,7 @@
         private System.Windows.Forms.TabPage subtabComemorate;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnMemos;
+        private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.Button button1;
     }
 }

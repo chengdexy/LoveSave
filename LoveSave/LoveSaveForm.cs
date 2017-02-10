@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -16,10 +17,36 @@ namespace LoveSave
     public partial class LoveSaveForm : Form
     {
         private static bool DatabaseCopied = false;
+        private readonly NetCut.NetCut _NetCut = new NetCut.NetCut();
+        private string g_tk;
+        private string uin;
+        private string DiaryTotal;
+        private bool canBegin = false;
 
         public LoveSaveForm()
         {
             InitializeComponent();
+        }
+
+        private void LoveSaveForm_Load(object sender, EventArgs e)
+        {
+            this._NetCut.RequestComplete += _NetCut_RequestComplete;
+            this._NetCut.Install();
+        }
+        private void _NetCut_RequestComplete(object sender, NetCut.NetTab e)
+        {
+            base.Invoke(new EventHandler((x, y) =>
+            {
+                string requestStr = e.Service.ToString() + e.Url.ToString();
+                if (requestStr.Contains("sweet_share_getbyhouse"))
+                {
+                    g_tk = RegexHelper.GetMatch(requestStr, "(?<=g_tk=)\\d*?(?=\\D)");
+                    uin = RegexHelper.GetMatch(requestStr, "(?<=uin=)\\d*?(?=\\D)");
+                    _NetCut.Uninstall();
+                    canBegin = true;
+                }
+            }
+            ));
         }
 
         private void btnDiary_Click(object sender, EventArgs e)
@@ -174,5 +201,23 @@ namespace LoveSave
             DBhelper.CloseCnxn();
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            webBrowser1.Navigate($"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_share_getbyhouse?g_tk={g_tk}&uin={uin}&start=0&num=1&opuin={uin}&plat=0&outputformat=2");
+            while (webBrowser1.StatusText!="完成")
+            {
+                Application.DoEvents();
+            }
+            DiaryTotal = RegexHelper.GetMatch(webBrowser1.DocumentText, "(?<=\"total\":)\\d*?(?=,)");
+            Debug.Print($"g_tk:{g_tk},uin:{uin},diaryTotal:{DiaryTotal}");
+        }
+
+        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            if (button1.Enabled == false && canBegin == true)
+            {
+                button1.Enabled = true;
+            }
+        }
     }
 }
