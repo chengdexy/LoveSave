@@ -20,7 +20,7 @@ namespace LoveSave
         private readonly NetCut.NetCut _NetCut = new NetCut.NetCut();
         private string g_tk;
         private string uin;
-        private string DiaryTotal;
+        private string DiaryTotal = "";
         private bool canBegin = false;
 
         public LoveSaveForm()
@@ -43,6 +43,7 @@ namespace LoveSave
                     g_tk = RegexHelper.GetMatch(requestStr, "(?<=g_tk=)\\d*?(?=\\D)");
                     uin = RegexHelper.GetMatch(requestStr, "(?<=uin=)\\d*?(?=\\D)");
                     _NetCut.Uninstall();
+                    webBrowser1.Navigate("about:blank");
                     canBegin = true;
                 }
             }
@@ -203,13 +204,23 @@ namespace LoveSave
 
         private void button1_Click(object sender, EventArgs e)
         {
+            //获取diary记录总数
+            GetDiaryTotalCount();
+            //获取所有diary记录的json文件
+            //获取所有chat记录的json文件
+            //获取所有memos记录的json文件
+        }
+
+        private string GetDiaryTotalCount()
+        {
+            string total = "";
             webBrowser1.Navigate($"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_share_getbyhouse?g_tk={g_tk}&uin={uin}&start=0&num=1&opuin={uin}&plat=0&outputformat=2");
-            while (webBrowser1.StatusText!="完成")
+            while (DiaryTotal == "")
             {
                 Application.DoEvents();
+                total = RegexHelper.GetMatch(webBrowser1.DocumentText, "(?<=\"total\":)\\d*?(?=,)");
             }
-            DiaryTotal = RegexHelper.GetMatch(webBrowser1.DocumentText, "(?<=\"total\":)\\d*?(?=,)");
-            Debug.Print($"g_tk:{g_tk},uin:{uin},diaryTotal:{DiaryTotal}");
+            return total;
         }
 
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
