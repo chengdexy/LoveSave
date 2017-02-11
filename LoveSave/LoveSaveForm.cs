@@ -73,7 +73,7 @@ namespace LoveSave
             return result;
         }
         #endregion
-        #region 事件
+        #region 事件 <===入口
         //程序开始
         private void LoveSaveForm_Load(object sender, EventArgs e)
         {
