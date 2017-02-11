@@ -16,10 +16,18 @@ namespace LoveSave
             return dtStart.Add(toNow);
         }
 
-        internal static long DateToStamp(DateTime date)
+        public static long DateToStamp(DateTime date, bool secIsOk)
         {
             System.DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
-            return (long)(date - startTime).TotalSeconds;
+            if (secIsOk)
+            {
+                return (long)(date - startTime).TotalSeconds;
+
+            }
+            else
+            {
+                return (long)(date - startTime).TotalMilliseconds;
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace LoveSave
 {
@@ -36,6 +37,18 @@ namespace LoveSave
             {
                 return null;
             }
+        }
+
+        public static string GetMatchWaitBrowser(string url, ref WebBrowser browser, string regular)
+        {
+            string result = string.Empty;
+            browser.Navigate(url);
+            while (string.IsNullOrEmpty(browser.DocumentText) || string.IsNullOrEmpty(result))
+            {
+                Application.DoEvents();
+                result = RegexHelper.GetMatch(browser.DocumentText, regular);
+            }
+            return result;
         }
     }
 }

@@ -41,7 +41,7 @@
             this.btnMemos = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnStart = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabMain.SuspendLayout();
             this.subtabItem.SuspendLayout();
@@ -58,18 +58,20 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = global::LoveSave.Properties.Resources._7995e601;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 7);
+            this.pictureBox1.Location = new System.Drawing.Point(16, 9);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(70, 70);
+            this.pictureBox1.Size = new System.Drawing.Size(93, 88);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
             // btnDiary
             // 
-            this.btnDiary.Location = new System.Drawing.Point(48, 10);
+            this.btnDiary.Location = new System.Drawing.Point(64, 12);
+            this.btnDiary.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnDiary.Name = "btnDiary";
-            this.btnDiary.Size = new System.Drawing.Size(114, 23);
+            this.btnDiary.Size = new System.Drawing.Size(152, 29);
             this.btnDiary.TabIndex = 2;
             this.btnDiary.Text = "选择要解析的文件";
             this.btnDiary.UseVisualStyleBackColor = true;
@@ -79,9 +81,10 @@
             // 
             this.lblResult.AutoSize = true;
             this.lblResult.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblResult.Location = new System.Drawing.Point(3, 9);
+            this.lblResult.Location = new System.Drawing.Point(4, 11);
+            this.lblResult.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblResult.Name = "lblResult";
-            this.lblResult.Size = new System.Drawing.Size(16, 15);
+            this.lblResult.Size = new System.Drawing.Size(20, 18);
             this.lblResult.TabIndex = 3;
             this.lblResult.Text = "...";
             // 
@@ -91,22 +94,22 @@
             this.tabMain.Controls.Add(this.subtabItem);
             this.tabMain.Controls.Add(this.subtabChat);
             this.tabMain.Controls.Add(this.subtabComemorate);
-            this.tabMain.Location = new System.Drawing.Point(87, 10);
-            this.tabMain.Margin = new System.Windows.Forms.Padding(2);
+            this.tabMain.Location = new System.Drawing.Point(116, 12);
+            this.tabMain.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabMain.Multiline = true;
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(224, 68);
+            this.tabMain.Size = new System.Drawing.Size(299, 85);
             this.tabMain.TabIndex = 4;
             // 
             // subtabItem
             // 
             this.subtabItem.Controls.Add(this.btnDiary);
-            this.subtabItem.Location = new System.Drawing.Point(4, 25);
-            this.subtabItem.Margin = new System.Windows.Forms.Padding(2);
+            this.subtabItem.Location = new System.Drawing.Point(4, 28);
+            this.subtabItem.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.subtabItem.Name = "subtabItem";
-            this.subtabItem.Padding = new System.Windows.Forms.Padding(2);
-            this.subtabItem.Size = new System.Drawing.Size(216, 39);
+            this.subtabItem.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.subtabItem.Size = new System.Drawing.Size(291, 53);
             this.subtabItem.TabIndex = 0;
             this.subtabItem.Text = "解析日志";
             this.subtabItem.UseVisualStyleBackColor = true;
@@ -114,20 +117,21 @@
             // subtabChat
             // 
             this.subtabChat.Controls.Add(this.btnChat);
-            this.subtabChat.Location = new System.Drawing.Point(4, 25);
-            this.subtabChat.Margin = new System.Windows.Forms.Padding(2);
+            this.subtabChat.Location = new System.Drawing.Point(4, 55);
+            this.subtabChat.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.subtabChat.Name = "subtabChat";
-            this.subtabChat.Padding = new System.Windows.Forms.Padding(2);
-            this.subtabChat.Size = new System.Drawing.Size(216, 39);
+            this.subtabChat.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.subtabChat.Size = new System.Drawing.Size(291, 26);
             this.subtabChat.TabIndex = 1;
             this.subtabChat.Text = "解析密聊";
             this.subtabChat.UseVisualStyleBackColor = true;
             // 
             // btnChat
             // 
-            this.btnChat.Location = new System.Drawing.Point(52, 10);
+            this.btnChat.Location = new System.Drawing.Point(69, 12);
+            this.btnChat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnChat.Name = "btnChat";
-            this.btnChat.Size = new System.Drawing.Size(114, 23);
+            this.btnChat.Size = new System.Drawing.Size(152, 29);
             this.btnChat.TabIndex = 3;
             this.btnChat.Text = "选择要解析的文件";
             this.btnChat.UseVisualStyleBackColor = true;
@@ -136,20 +140,21 @@
             // subtabComemorate
             // 
             this.subtabComemorate.Controls.Add(this.btnMemos);
-            this.subtabComemorate.Location = new System.Drawing.Point(4, 25);
-            this.subtabComemorate.Margin = new System.Windows.Forms.Padding(2);
+            this.subtabComemorate.Location = new System.Drawing.Point(4, 55);
+            this.subtabComemorate.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.subtabComemorate.Name = "subtabComemorate";
-            this.subtabComemorate.Padding = new System.Windows.Forms.Padding(2);
-            this.subtabComemorate.Size = new System.Drawing.Size(216, 39);
+            this.subtabComemorate.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.subtabComemorate.Size = new System.Drawing.Size(291, 26);
             this.subtabComemorate.TabIndex = 2;
             this.subtabComemorate.Text = "解析纪念";
             this.subtabComemorate.UseVisualStyleBackColor = true;
             // 
             // btnMemos
             // 
-            this.btnMemos.Location = new System.Drawing.Point(52, 10);
+            this.btnMemos.Location = new System.Drawing.Point(69, 12);
+            this.btnMemos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnMemos.Name = "btnMemos";
-            this.btnMemos.Size = new System.Drawing.Size(114, 23);
+            this.btnMemos.Size = new System.Drawing.Size(152, 29);
             this.btnMemos.TabIndex = 4;
             this.btnMemos.Text = "选择要解析的文件";
             this.btnMemos.UseVisualStyleBackColor = true;
@@ -159,45 +164,48 @@
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.lblResult);
-            this.panel1.Location = new System.Drawing.Point(12, 83);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2);
+            this.panel1.Location = new System.Drawing.Point(16, 104);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(300, 45);
+            this.panel1.Size = new System.Drawing.Size(399, 55);
             this.panel1.TabIndex = 5;
             // 
             // webBrowser1
             // 
-            this.webBrowser1.Location = new System.Drawing.Point(335, 7);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Location = new System.Drawing.Point(447, 9);
+            this.webBrowser1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(27, 25);
             this.webBrowser1.Name = "webBrowser1";
             this.webBrowser1.ScriptErrorsSuppressed = true;
-            this.webBrowser1.Size = new System.Drawing.Size(332, 283);
+            this.webBrowser1.Size = new System.Drawing.Size(443, 354);
             this.webBrowser1.TabIndex = 6;
             this.webBrowser1.Url = new System.Uri("http://sweet.snsapp.qq.com", System.UriKind.Absolute);
             this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
             // 
-            // button1
+            // btnStart
             // 
-            this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(43, 150);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(196, 96);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "关键参数已捕获,点我开始解析";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnStart.Enabled = false;
+            this.btnStart.Location = new System.Drawing.Point(57, 188);
+            this.btnStart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(261, 120);
+            this.btnStart.TabIndex = 7;
+            this.btnStart.Text = "关键参数已捕获,点我开始解析";
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // LoveSaveForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(679, 320);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(905, 400);
+            this.Controls.Add(this.btnStart);
             this.Controls.Add(this.webBrowser1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.tabMain);
             this.Controls.Add(this.pictureBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "LoveSaveForm";
             this.Text = "LoveSave";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoveSaveForm_FormClosing);
@@ -227,6 +235,6 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnMemos;
         private System.Windows.Forms.WebBrowser webBrowser1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnStart;
     }
 }

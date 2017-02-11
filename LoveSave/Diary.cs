@@ -72,7 +72,7 @@ namespace LoveSave
 
             set
             {
-                _time = DateHelper.DateToStamp(value);
+                _time = DateHelper.DateToStamp(value,true );
             }
         }
         /// <summary>

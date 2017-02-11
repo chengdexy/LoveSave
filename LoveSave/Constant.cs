@@ -12,6 +12,8 @@ namespace LoveSave
         public const string splitRichvalToImageInfos = "(?<={).*?(?=})";                //(?<={).*?(?=})
         public const string findUrlInRichval = "(?<=url\":\").*?(?=\")";                //(?<="url":").*?(?=")
         public const string findLloclistInRichval = "(?<=\"lloclist\":\").*?(?=\")";    //(?<="lloclist":").*?(?=")
+        public const string findTotal = "(?<=\"total\":)\\d*?(?=,)";           //(?<="total":)\d*?(?=,)
+        public const string findPeerUin = "(?<=\"peeruin\":)\\d*?(?=,)";                //(?<="peeruin":)\d*?(?=,)
         #endregion
         #region 存储路径
         public const string DiaryImageDownloadPath = "Result\\DiaryImage\\";
