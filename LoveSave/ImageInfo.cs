@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -59,27 +60,32 @@ namespace LoveSave
             _url = GetUrl(analysisStr, out _fileName);
         }
 
-        private string GetUrl(string analysisStr, out string _fileName)
+        private string GetUrl(string analysisStr, out string fileName)
         {
             string url = AnalysisUrl(analysisStr);
             string lastWord = url.Substring(url.Length - 1, 1);
             if (lastWord == "?")
             {
                 //系统自带图片
-                string[] temp = analysisStr.Split('/');
-                _fileName = temp[temp.Length - 2];
-                return url.Substring(0, url.Length - 1);
+                url = url.Substring(0, url.Length - 1); //去掉问号
+                string[] temp = url.Split('/');
+                fileName = temp[temp.Length - 1];
+                Debug.Print($"filename = {FileName }");
+                return url;
             }
             else if (lastWord == "/")
             {
                 //用户上传图片
-                _fileName = AnalysisLloclist(analysisStr);
+                fileName = AnalysisLloclist(analysisStr) + ".jpg";
+                fileName = fileName.Replace('*', '_');
+                Debug.Print($"filename = {FileName }");
                 return url + "670";
             }
             else
             {
                 throw new Exception("Found an error when analysis url of richval.");
             }
+
         }
         private string AnalysisLloclist(string analysisStr)
         {
@@ -87,7 +93,9 @@ namespace LoveSave
         }
         private string AnalysisUrl(string analysisStr)
         {
-            return RegexHelper.GetMatch(analysisStr, Constant.findUrlInRichval);
+            string url = RegexHelper.GetMatch(analysisStr, Constant.findUrlInRichval);
+            Debug.Print(url);
+            return url;
         }
 
         public void Save()
@@ -96,7 +104,7 @@ namespace LoveSave
         }
         public void Download()
         {
-            string path = Constant.DiaryImageDownloadPath + $"\\{FileName}.jpg";
+            string path = Constant.DiaryImageDownloadPath + $"{FileName}";
             if (File.Exists(path))
             {
                 return;

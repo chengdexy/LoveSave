@@ -42,7 +42,7 @@ namespace LoveSave
         private void WaitNavigated()
         {
             canStartNewNavigate = false;
-            webBrowser1.Navigate("about:blank");
+            browserMain.Navigate("about:blank");
             this.Enabled = false;
             while (!canStartNewNavigate)
             {
@@ -59,11 +59,13 @@ namespace LoveSave
             else
             {
                 #region 复制数据库文件
-                if (!Directory.Exists("Result"))
+                if (!Directory.Exists(Constant.DatabasePath))
                 {
-                    Directory.CreateDirectory("Result");
+                    Directory.CreateDirectory(Constant.DatabasePath);
+                    Directory.CreateDirectory(Constant.DiaryImageDownloadPath);
+                    Directory.CreateDirectory(Constant.ChatImageDownloadPath);
                 }
-                File.Copy("Data.mdb", "Result\\Data.mdb", true);
+                File.Copy("Data.mdb", $"{Constant.DatabasePath}Data.mdb", true);
                 DatabaseCopied = true;
                 #endregion
             }
@@ -83,16 +85,16 @@ namespace LoveSave
             long t = DateHelper.DateToStamp(DateTime.Now, false);
             url = $"http://gm.show.qq.com/cgi-bin/qs_gm_qlyz_get?cmd=getbaseinfo&t={t}&opuin={uin}&uin={uin}&plat=0&g_tk={g_tk}";
             WaitNavigated();
-            peeruin = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, Constant.findPeerUin);
+            peeruin = RegexHelper.GetMatchWaitBrowser(url, ref browserMain, Constant.findPeerUin);
             //获取diary记录总数
             url = $"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_share_getbyhouse?g_tk={g_tk}&uin={uin}&start=0&num=1&opuin={uin}&plat=0&outputformat=2";
             WaitNavigated();
-            diaryTotal = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, Constant.findTotal);
+            diaryTotal = RegexHelper.GetMatchWaitBrowser(url, ref browserMain, Constant.findTotal);
             //获取chat记录总数
             url = $"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_chat_getmsg?opuin={uin}&luin={peeruin}&cmd=0&beginidx=0&endidx=0&order=0&src=1&plat=0&uin={uin}&g_tk={g_tk}";
             WaitNavigated();
-            chatTotal = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, Constant.findTotal);
-            Debug.Print($"Analysis successful!\ng_tk:{g_tk},uin:{uin},peeruin:{peeruin},\ndiaries:{diaryTotal},chats:{chatTotal}");
+            chatTotal = RegexHelper.GetMatchWaitBrowser(url, ref browserMain, Constant.findTotal);
+
         }
         private void SetRegistryKey()
         {
@@ -106,61 +108,12 @@ namespace LoveSave
             key.Close();
             key.Dispose();
         }
-        #endregion
-        #region 事件 <===入口
-        //程序开始 <=步骤1
-        private void LoveSaveForm_Load(object sender, EventArgs e)
-        {
-            this._NetCut.RequestComplete += _NetCut_RequestComplete;
-            this._NetCut.Install();
-        }
-        //得到gtk,uin <=步骤2
-        private void _NetCut_RequestComplete(object sender, NetCut.NetTab e)
-        {
-            base.Invoke(new EventHandler((x, y) =>
-            {
-                string requestStr = e.Service.ToString() + e.Url.ToString();
-                if (requestStr.Contains("sweet_share_getbyhouse"))
-                {
-                    g_tk = RegexHelper.GetMatch(requestStr, "(?<=g_tk=)\\d*?(?=\\D)");
-                    uin = RegexHelper.GetMatch(requestStr, "(?<=uin=)\\d*?(?=\\D)");
-                    _NetCut.Uninstall();
-                    WaitNavigated();
-                    btnStart.Enabled = true;
-                }
-            }
-            ));
-        }
-        //点击事件 <=步骤3
-        private void btnStart_Click(object sender, EventArgs e)
-        {
-            #region 修改注册表
-            //修改注册表,阻止"application/x-javascript"型文件被下载
-            SetRegistryKey();
-            #endregion
-            #region 获取必要参数
-            //得到peeruin,diaryTotal,chatTotal
-            GetNecessary();
-            #endregion
-            #region 获取需要解析的原始文本
-            //获取所有diary记录的json文本
-            GetAllDiaryJson();
-            //获取所有chat记录的json文件
-            GetAllChatJson();
-            //获取所有memos记录的json文件
-            GetAllMemos();
-            #endregion
-            #region 解析原始文本生成Result
-            #endregion
-
-        }
-
         private void GetAllMemos()
         {
             string html;
             string url = $"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_memorialday_get_v3?uin={uin}&opuin={uin}&plat=0&g_tk={g_tk}";
             WaitNavigated();
-            html = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, "{.*}");
+            html = RegexHelper.GetMatchWaitBrowser(url, ref browserMain, "{.*}");
             memosList.Add(html);
         }
         private void GetAllChatJson()
@@ -184,7 +137,7 @@ namespace LoveSave
                 }
                 string url = $"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_chat_getmsg?opuin={uin}&luin={peeruin}&cmd=0&beginidx={beginidx}&endidx={endidx}&order=0&src=1&plat=0&uin={uin}&g_tk={g_tk}";
                 WaitNavigated();
-                html = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, "{.*}");
+                html = RegexHelper.GetMatchWaitBrowser(url, ref browserMain, "{.*}");
                 chatList.Add(html);
             }
         }
@@ -208,14 +161,134 @@ namespace LoveSave
                 }
                 string url = $"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_share_getbyhouse?g_tk={g_tk}&uin={uin}&start={start}&num={num}&opuin={uin}&plat=0&outputformat=4";
                 WaitNavigated();
-                html = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, "{.*}");
+                html = RegexHelper.GetMatchWaitBrowser(url, ref browserMain, "{.*}");
                 diaryList.Add(html);
             }
         }
-
+        private void AddResult(string result)
+        {
+            listResult.Items.Insert(0, result);
+            listResult.SelectedIndex = 0;
+        }
+        #endregion
+        #region 事件 <===入口
+        //程序开始 <=步骤1
+        private void LoveSaveForm_Load(object sender, EventArgs e)
+        {
+            this._NetCut.RequestComplete += _NetCut_RequestComplete;
+            this._NetCut.Install();
+        }
+        //得到gtk,uin <=步骤2
+        private void _NetCut_RequestComplete(object sender, NetCut.NetTab e)
+        {
+            base.Invoke(new EventHandler((x, y) =>
+            {
+                string requestStr = e.Service.ToString() + e.Url.ToString();
+                if (requestStr.Contains("sweet_share_getbyhouse"))
+                {
+                    g_tk = RegexHelper.GetMatch(requestStr, "(?<=g_tk=)\\d*?(?=\\D)");
+                    uin = RegexHelper.GetMatch(requestStr, "(?<=uin=)\\d*?(?=\\D)");
+                    _NetCut.Uninstall();
+                    WaitNavigated();
+                    this.Width = 350;
+                    btnStart.Enabled = true;
+                    btnStart.Text = "登陆成功,点击这里开始捕获数据!!";
+                    AddResult("登陆成功!");
+                    AddResult("点击上方按钮开始捕获数据...");
+                }
+            }
+            ));
+        }
+        //点击事件 <=步骤3
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            btnStart.Text = "若卡住,点我重试!";
+            AddResult("捕捉核心参数中...");
+            #region 修改注册表
+            //修改注册表,阻止"application/x-javascript"型文件被下载
+            SetRegistryKey();
+            #endregion
+            #region 获取必要参数
+            //得到peeruin,diaryTotal,chatTotal
+            GetNecessary();
+            #endregion
+            AddResult("成功捕获核心参数!");
+            AddResult($"验证号:{g_tk}");
+            AddResult($"登陆QQ号:{uin}");
+            AddResult($"情侣QQ号{peeruin}");
+            #region 获取需要解析的原始文本
+            AddResult("开始检索内容...(若卡住,请再次点击上方按钮)");
+            //获取所有diary记录的json文本
+            AddResult($"检测到共有情侣日志{diaryTotal}篇,开始解析详细内容...");
+            GetAllDiaryJson();
+            AddResult("完成!");
+            //获取所有chat记录的json文件
+            AddResult($"检测到共有密语聊天记录{chatTotal}条,开始解析详细内容...");
+            GetAllChatJson();
+            AddResult("完成!");
+            //获取所有memos记录的json文件
+            AddResult("检测到纪念日信息若干,开始解析详细内容...");
+            GetAllMemos();
+            AddResult($"完成!共{memosList.Count}个.");
+            #endregion
+            AddResult("全部解析已完成!开始将数据保存至数据库,并将相关图片保存至本地...");
+            #region 解析原始文本生成Result
+            btnStart.Text = "保存数据中,请不要结束进程!";
+            //创建数据库
+            CopyDatabaseToResult();
+            //解析diary
+            diaryList.ForEach(str =>
+            {
+                JObject jo = JObject.Parse(str);
+                jo.SelectToken("data").Select(p => p).ToList().ForEach(jodata =>
+                {
+                    new Diary(jodata).Save();
+                });
+            });
+            //解析chat
+            chatList.ForEach(str =>
+            {
+                JObject jo = JObject.Parse(str);
+                jo.SelectToken("data").Select(p => p).ToList().ForEach(jodata =>
+                {
+                    ChatItem ci = new ChatItem(jodata);
+                    ci.SaveToDatabase();
+                    if (ci.hasImage())
+                    {
+                        ci.DownloadImageTo(Constant.ChatImageDownloadPath);
+                    }
+                });
+            });
+            //解析memos
+            memosList.ForEach(str =>
+            {
+                JObject jo = JObject.Parse(str);
+                jo.SelectToken("memos").Select(p => p).ToList().ForEach(jodata =>
+                {
+                    string time = jodata["time"].ToString();
+                    int year = Convert.ToInt32(time.Substring(0, 4));
+                    int month = Convert.ToInt32(time.Substring(5, 2));
+                    int day = Convert.ToInt32(time.Substring(8, 2));
+                    Memos mm = new Memos(
+                        jodata["name"].ToString(),
+                        year, month, day,
+                        jodata["lunar"].ToString().Trim() == "1" ? true : false
+                        );
+                    mm.SaveToDatabase();
+                });
+            });
+            #endregion
+            DBhelper.CloseCnxn();
+            //打开文件夹供查看
+            AddResult($"全部工作已完成!!");
+            AddResult($"{uin}与{peeruin}的情侣空间中包含的主要内容已成功导出并保存到本地!");
+            MessageBox.Show("导出成功！即将弹出导出结果文件夹窗口.", "导出成功!", MessageBoxButtons.OK, MessageBoxIcon.Question);
+            Process.Start("explorer.exe", Constant.DatabasePath);
+        }
+        //被动事件
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            if (e.Url.ToString() == "about:blank" && webBrowser1.ReadyState == WebBrowserReadyState.Complete)
+            if (e.Url.ToString() == "about:blank" && browserMain.ReadyState == WebBrowserReadyState.Complete)
             {
                 canStartNewNavigate = true;
             }
@@ -223,127 +296,6 @@ namespace LoveSave
         private void LoveSaveForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             DBhelper.CloseCnxn();
-        }
-        //Todo: 以下是旧版功能触发按钮,待自动解析逻辑完成将删除
-        private void btnDiary_Click(object sender, EventArgs e)
-        {
-            ofdHtml.Filter = "JSON文件(*.json)|*.json";
-            ofdHtml.ShowDialog();
-            if (string.IsNullOrEmpty(ofdHtml.FileName))
-            {
-                return;
-            }
-            if (!File.Exists(ofdHtml.FileName))
-            {
-                return;
-            }
-            lblResult.Text = "正在保存内容到数据库，并将发现的图片下载到本地...";
-            lblResult.Refresh();
-            CopyDatabaseToResult();
-            //解析并保存内容
-            JsonHelper.JsonToObjectCollection(ofdHtml.FileName, "data", Encoding.Default).ForEach(joData =>
-            {
-                new Diary(joData).Save();
-            });
-            DBhelper.CloseCnxn();
-            //打开文件夹供查看
-            lblResult.Text = "全部工作已完成!";
-            System.Diagnostics.Process.Start("explorer.exe", "Result\\");
-        }
-        private void btnChat_Click(object sender, EventArgs e)
-        {
-            ofdHtml.Filter = "JSON文件(*.json)|*.json";
-            ofdHtml.ShowDialog();
-            if (string.IsNullOrEmpty(ofdHtml.FileName))
-            {
-                return;
-            }
-            else
-            {
-                if (!File.Exists(ofdHtml.FileName))
-                {
-                    return;
-                }
-                else
-                {
-                    //解析内容
-                    lblResult.Text = "正在解析内容...";
-                    lblResult.Refresh();
-                    StreamReader sr = new StreamReader(ofdHtml.FileName, Encoding.Default);
-                    string strJson = sr.ReadToEnd();
-
-                    JObject joChat = JObject.Parse(strJson);
-
-                    //保存内容
-                    lblResult.Text = "正在保存内容到数据库，并将发现的图片下载到本地...";
-                    lblResult.Refresh();
-                    CopyDatabaseToResult();
-                    var joDatas = joChat.SelectToken("data").Select(p => p).ToList();
-                    foreach (var joData in joDatas)
-                    {
-                        ChatItem ci = new ChatItem(joData);
-                        ci.SaveToDatabase();
-                        //下载图片（如果有）
-                        if (ci.hasImage())
-                        {
-                            ci.DownloadImageTo("Result\\ChatImage\\");
-                        }
-                    }
-                    DBhelper.CloseCnxn();
-                    //打开文件夹供查看
-                    lblResult.Text = "全部工作已完成!";
-                    System.Diagnostics.Process.Start("explorer.exe", "Result\\");
-                }
-            }
-        }
-        private void btnMemos_Click(object sender, EventArgs e)
-        {
-            ofdHtml.Filter = "JSON文件(*.json)|*.json";
-            ofdHtml.ShowDialog();
-            if (string.IsNullOrEmpty(ofdHtml.FileName))
-            {
-                return;
-            }
-            else
-            {
-                if (!File.Exists(ofdHtml.FileName))
-                {
-                    return;
-                }
-                else
-                {
-                    //解析内容
-                    lblResult.Text = "正在解析内容...";
-                    lblResult.Refresh();
-                    StreamReader sr = new StreamReader(ofdHtml.FileName, Encoding.Default);
-                    string strJson = sr.ReadToEnd();
-
-                    JObject joChat = JObject.Parse(strJson);
-
-                    //保存内容
-                    lblResult.Text = "正在保存内容到数据库...";
-                    lblResult.Refresh();
-                    CopyDatabaseToResult();
-                    var joDatas = joChat.SelectToken("memos").Select(p => p).ToList();
-                    foreach (var joData in joDatas)
-                    {
-                        string time = joData["time"].ToString();
-                        int year = Convert.ToInt32(time.Substring(0, 4));
-                        int month = Convert.ToInt32(time.Substring(5, 2));
-                        int day = Convert.ToInt32(time.Substring(8, 2));
-                        Memos mm = new Memos(
-                            joData["name"].ToString(),
-                            year, month, day,
-                            joData["lunar"].ToString().Trim() == "1" ? true : false
-                            );
-                        mm.SaveToDatabase();
-                    }
-                    DBhelper.CloseCnxn();
-                    //打开文件夹供查看
-                    lblResult.Text = "全部工作已完成!";
-                    System.Diagnostics.Process.Start("explorer.exe", "Result\\");
-                }
-            }
         }
         #endregion 
     }
