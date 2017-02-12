@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,9 @@ namespace LoveSave
         private static bool DatabaseCopied = false;
         private readonly NetCut.NetCut _NetCut = new NetCut.NetCut();
         private bool canStartNewNavigate = false;
+        private List<string> diaryList = new List<string>();
+        private List<string> chatList = new List<string>();
+        private List<string> memosList = new List<string>();
         #endregion
         #region 必要字段
         private string g_tk;
@@ -72,15 +76,45 @@ namespace LoveSave
             sr.Dispose();
             return result;
         }
+        private void GetNecessary()
+        {
+            string url;
+            //获取情侣的QQ号 - peeruin
+            long t = DateHelper.DateToStamp(DateTime.Now, false);
+            url = $"http://gm.show.qq.com/cgi-bin/qs_gm_qlyz_get?cmd=getbaseinfo&t={t}&opuin={uin}&uin={uin}&plat=0&g_tk={g_tk}";
+            WaitNavigated();
+            peeruin = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, Constant.findPeerUin);
+            //获取diary记录总数
+            url = $"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_share_getbyhouse?g_tk={g_tk}&uin={uin}&start=0&num=1&opuin={uin}&plat=0&outputformat=2";
+            WaitNavigated();
+            diaryTotal = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, Constant.findTotal);
+            //获取chat记录总数
+            url = $"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_chat_getmsg?opuin={uin}&luin={peeruin}&cmd=0&beginidx=0&endidx=0&order=0&src=1&plat=0&uin={uin}&g_tk={g_tk}";
+            WaitNavigated();
+            chatTotal = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, Constant.findTotal);
+            Debug.Print($"Analysis successful!\ng_tk:{g_tk},uin:{uin},peeruin:{peeruin},\ndiaries:{diaryTotal},chats:{chatTotal}");
+        }
+        private void SetRegistryKey()
+        {
+            RegistryKey key = Registry.ClassesRoot;
+            RegistryKey type = key.CreateSubKey(@"MIME\Database\Content Type\application/x-javascript");
+            type.SetValue("CLSID", "{25336920-03F9-11cf-8FD0-00AA00686F13}", RegistryValueKind.String);
+            //type.SetValue("Encoding", Encoding.UTF8.GetBytes("80000"), RegistryValueKind.Binary);
+            type.Flush();
+            type.Close();
+            type.Dispose();
+            key.Close();
+            key.Dispose();
+        }
         #endregion
         #region 事件 <===入口
-        //程序开始
+        //程序开始 <=步骤1
         private void LoveSaveForm_Load(object sender, EventArgs e)
         {
             this._NetCut.RequestComplete += _NetCut_RequestComplete;
             this._NetCut.Install();
         }
-        //得到gtk,uin
+        //得到gtk,uin <=步骤2
         private void _NetCut_RequestComplete(object sender, NetCut.NetTab e)
         {
             base.Invoke(new EventHandler((x, y) =>
@@ -97,31 +131,88 @@ namespace LoveSave
             }
             ));
         }
-        //得到peeruin,diaryTotal,chatTotal
+        //点击事件 <=步骤3
         private void btnStart_Click(object sender, EventArgs e)
         {
-            #region 获取必要参数
-            string url;
-            //获取情侣的QQ号 - peeruin
-            long t = DateHelper.DateToStamp(DateTime.Now, false);
-            url = $"http://gm.show.qq.com/cgi-bin/qs_gm_qlyz_get?cmd=getbaseinfo&t={t}&opuin={uin}&uin={uin}&plat=0&g_tk={g_tk}";
-            WaitNavigated();
-            peeruin = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, Constant.findPeerUin);
-            //获取diary记录总数
-            url = $"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_share_getbyhouse?g_tk={g_tk}&uin={uin}&start=0&num=1&opuin={uin}&plat=0&outputformat=2";
-            WaitNavigated();
-            diaryTotal = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, Constant.findTotal);
-            //获取chat记录总数
-            url = $"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_chat_getmsg?opuin={uin}&luin={peeruin}&cmd=0&beginidx=0&endidx=1&order=0&src=1&plat=0&uin={uin}&g_tk={g_tk}";
-            WaitNavigated();
-            chatTotal = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, Constant.findTotal);
+            #region 修改注册表
+            //修改注册表,阻止"application/x-javascript"型文件被下载
+            SetRegistryKey();
             #endregion
-            //获取所有diary记录的json文件
+            #region 获取必要参数
+            //得到peeruin,diaryTotal,chatTotal
+            GetNecessary();
+            #endregion
+            #region 获取需要解析的原始文本
+            //获取所有diary记录的json文本
+            GetAllDiaryJson();
             //获取所有chat记录的json文件
+            GetAllChatJson();
             //获取所有memos记录的json文件
+            GetAllMemos();
+            #endregion
+            #region 解析原始文本生成Result
+            #endregion
 
-            Debug.Print($"Analysis successful!\ng_tk:{g_tk},uin:{uin},peeruin:{peeruin},\ndiaries:{diaryTotal},chats:{chatTotal}");
         }
+
+        private void GetAllMemos()
+        {
+            string html;
+            string url = $"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_memorialday_get_v3?uin={uin}&opuin={uin}&plat=0&g_tk={g_tk}";
+            WaitNavigated();
+            html = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, "{.*}");
+            memosList.Add(html);
+        }
+        private void GetAllChatJson()
+        {
+            string html;
+            int step = 100;
+            int beginidx = 0;
+            int endidx;
+            int sum = Convert.ToInt32(chatTotal);
+            int turn = sum / step + 1;
+            for (int i = 0; i < turn; i++)
+            {
+                beginidx = i * step;
+                if (beginidx + step >= sum)
+                {
+                    endidx = beginidx + sum % step - 1;
+                }
+                else
+                {
+                    endidx = beginidx + step - 1;
+                }
+                string url = $"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_chat_getmsg?opuin={uin}&luin={peeruin}&cmd=0&beginidx={beginidx}&endidx={endidx}&order=0&src=1&plat=0&uin={uin}&g_tk={g_tk}";
+                WaitNavigated();
+                html = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, "{.*}");
+                chatList.Add(html);
+            }
+        }
+        private void GetAllDiaryJson()
+        {
+            string html;
+            int start, num;
+            int step = 50;
+            int sum = Convert.ToInt32(diaryTotal);
+            int turn = sum / step + 1;
+            for (int i = 0; i < turn; i++)
+            {
+                start = i * step;
+                if (start + step > sum)
+                {
+                    num = sum % step;
+                }
+                else
+                {
+                    num = step;
+                }
+                string url = $"http://sweet.snsapp.qq.com/v2/cgi-bin/sweet_share_getbyhouse?g_tk={g_tk}&uin={uin}&start={start}&num={num}&opuin={uin}&plat=0&outputformat=4";
+                WaitNavigated();
+                html = RegexHelper.GetMatchWaitBrowser(url, ref webBrowser1, "{.*}");
+                diaryList.Add(html);
+            }
+        }
+
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             if (e.Url.ToString() == "about:blank" && webBrowser1.ReadyState == WebBrowserReadyState.Complete)

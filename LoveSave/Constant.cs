@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,9 @@ namespace LoveSave
         #endregion
         #region 存储路径
         public const string DiaryImageDownloadPath = "Result\\DiaryImage\\";
+        #endregion
+        #region 固定格式方法
+        
         #endregion
     }
 }
