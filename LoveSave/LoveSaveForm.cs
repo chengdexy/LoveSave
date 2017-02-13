@@ -65,7 +65,7 @@ namespace LoveSave
                     Directory.CreateDirectory(Constant.DiaryImageDownloadPath);
                     Directory.CreateDirectory(Constant.ChatImageDownloadPath);
                 }
-                File.Copy("Data.mdb", $"{Constant.DatabasePath}Data.mdb", true);
+                File.Copy($"{Constant.DataModelPath}Data.mdb", $"{Constant.DatabasePath}Data.mdb", true);
                 DatabaseCopied = true;
                 #endregion
             }

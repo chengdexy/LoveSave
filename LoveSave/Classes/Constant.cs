@@ -17,6 +17,7 @@ namespace LoveSave
         public const string findPeerUin = "(?<=\"peeruin\":)\\d*?(?=,)";                //(?<="peeruin":)\d*?(?=,)
         #endregion
         #region 存储路径
+        public const string DataModelPath = "Models\\";
         public const string DatabasePath = "Result\\";
         public const string DiaryImageDownloadPath = "Result\\DiaryImage\\";
         public const string ChatImageDownloadPath = "Result\\ChatImage\\";
