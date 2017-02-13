@@ -24,6 +24,9 @@ namespace LoveSave
         private List<string> diaryList = new List<string>();
         private List<string> chatList = new List<string>();
         private List<string> memosList = new List<string>();
+        private List<Diary> diaries = new List<Diary>();
+        private List<ChatItem> chats = new List<ChatItem>();
+        private List<Memos> memos = new List<Memos>();
         #endregion
         #region 必要字段
         private string g_tk;
@@ -59,13 +62,14 @@ namespace LoveSave
             else
             {
                 #region 复制数据库文件
-                if (!Directory.Exists(Constant.DatabasePath))
+                if (!Directory.Exists(Constant.ResultPath))
                 {
-                    Directory.CreateDirectory(Constant.DatabasePath);
+                    Directory.CreateDirectory(Constant.ResultPath);
                     Directory.CreateDirectory(Constant.DiaryImageDownloadPath);
                     Directory.CreateDirectory(Constant.ChatImageDownloadPath);
+                    Directory.CreateDirectory(Constant.PagesPath);
                 }
-                File.Copy($"{Constant.DataModelPath}Data.mdb", $"{Constant.DatabasePath}Data.mdb", true);
+                File.Copy($"{Constant.DataModelPath}", $"{Constant.ResultPath}Data.mdb", true);
                 DatabaseCopied = true;
                 #endregion
             }
@@ -202,6 +206,14 @@ namespace LoveSave
         //点击事件 <=步骤3
         private void btnStart_Click(object sender, EventArgs e)
         {
+            #region 自用字段初始化
+            diaryList.Clear();
+            chatList.Clear();
+            memosList.Clear();
+            diaries.Clear();
+            chats.Clear();
+            memos.Clear();
+            #endregion
             btnStart.Text = "若卡住,点我重试!";
             AddResult("捕捉核心参数中...");
             #region 修改注册表
@@ -242,7 +254,9 @@ namespace LoveSave
                 JObject jo = JObject.Parse(str);
                 jo.SelectToken("data").Select(p => p).ToList().ForEach(jodata =>
                 {
-                    new Diary(jodata).Save();
+                    Diary d = new Diary(jodata);
+                    diaries.Add(d);
+                    d.Save();
                 });
             });
             //解析chat
@@ -252,6 +266,7 @@ namespace LoveSave
                 jo.SelectToken("data").Select(p => p).ToList().ForEach(jodata =>
                 {
                     ChatItem ci = new ChatItem(jodata);
+                    chats.Add(ci);
                     ci.SaveToDatabase();
                     if (ci.hasImage())
                     {
@@ -274,16 +289,27 @@ namespace LoveSave
                         year, month, day,
                         jodata["lunar"].ToString().Trim() == "1" ? true : false
                         );
+                    memos.Add(mm);
                     mm.SaveToDatabase();
                 });
             });
             #endregion
             DBhelper.CloseCnxn();
-            //打开文件夹供查看
+            PageHelper ph = new PageHelper();
+            ph.CreateAll(diaries, chats, memos);
+            #region 打开文件夹供查看
             AddResult($"全部工作已完成!!");
             AddResult($"{uin}与{peeruin}的情侣空间中包含的主要内容已成功导出并保存到本地!");
-            MessageBox.Show("导出成功！即将弹出导出结果文件夹窗口.", "导出成功!", MessageBoxButtons.OK, MessageBoxIcon.Question);
-            Process.Start("explorer.exe", Constant.DatabasePath);
+            MessageBox.Show("导出成功！即将弹出导出结果.", "导出成功!", MessageBoxButtons.OK, MessageBoxIcon.Question);
+            Process.Start("explorer.exe", Constant.ResultPath + "index.html");
+            #endregion
+            btnStart.Visible = false;
+            btnResult.Visible = true;
+            btnResult.Enabled = true;
+        }
+        private void btnResult_Click(object sender, EventArgs e)
+        {
+            Process.Start("explorer.exe", Constant.ResultPath);
         }
         //被动事件
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -297,6 +323,6 @@ namespace LoveSave
         {
             DBhelper.CloseCnxn();
         }
-        #endregion 
+        #endregion
     }
 }

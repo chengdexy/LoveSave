@@ -34,6 +34,7 @@
             this.browserMain = new System.Windows.Forms.WebBrowser();
             this.btnStart = new System.Windows.Forms.Button();
             this.listResult = new System.Windows.Forms.ListBox();
+            this.btnResult = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -88,17 +89,32 @@
             this.listResult.Size = new System.Drawing.Size(305, 244);
             this.listResult.TabIndex = 8;
             // 
+            // btnResult
+            // 
+            this.btnResult.Enabled = false;
+            this.btnResult.Location = new System.Drawing.Point(88, 12);
+            this.btnResult.Name = "btnResult";
+            this.btnResult.Size = new System.Drawing.Size(229, 47);
+            this.btnResult.TabIndex = 9;
+            this.btnResult.Text = "打开导出文件夹";
+            this.btnResult.UseVisualStyleBackColor = true;
+            this.btnResult.Visible = false;
+            this.btnResult.Click += new System.EventHandler(this.btnResult_Click);
+            // 
             // LoveSaveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(679, 320);
+            this.Controls.Add(this.btnResult);
             this.Controls.Add(this.listResult);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.browserMain);
             this.Controls.Add(this.pictureBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "LoveSaveForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "LoveSave";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LoveSaveForm_FormClosing);
             this.Load += new System.EventHandler(this.LoveSaveForm_Load);
@@ -114,5 +130,6 @@
         private System.Windows.Forms.WebBrowser browserMain;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.ListBox listResult;
+        private System.Windows.Forms.Button btnResult;
     }
 }

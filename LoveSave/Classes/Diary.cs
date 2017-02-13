@@ -142,7 +142,7 @@ namespace LoveSave
             _content = jDiary["content"].ToString();
             _nick = jDiary["nick"].ToString();
             _uin = jDiary["uin"].ToString();
-            _time = Convert.ToInt64(jDiary["uin"].ToString());
+            _time = Convert.ToInt64(jDiary["time"].ToString());
             _com_total = Convert.ToInt32(jDiary["com_total"].ToString());
             if (hasComment)
             {

@@ -97,11 +97,13 @@
     <Compile Include="Classes\ChatItem.cs" />
     <Compile Include="Classes\Comment.cs" />
     <Compile Include="Classes\Constant.cs" />
+    <Compile Include="Classes\Page.cs" />
     <Compile Include="Helpers\DateHelper.cs" />
     <Compile Include="Helpers\DBhelper.cs" />
     <Compile Include="Classes\Diary.cs" />
     <Compile Include="Classes\ImageInfo.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />
+    <Compile Include="Helpers\PageHelper.cs" />
     <Compile Include="LoveSaveForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -145,10 +147,22 @@
     <None Include="Resources\7995e601.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Models\CommentModel.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Models\DataModel.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="icon.ico" />
+    <Content Include="Models\indexModel.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\ItemModel.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\PageModel.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="NetCut.dll" />
   </ItemGroup>
   <ItemGroup>
