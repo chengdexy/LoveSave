@@ -1,30 +1,44 @@
 ﻿<!doctype html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8" />
     <title>~capital~</title>
     <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 </head>
+
 <body style="background-color: silver;">
     <div class="container" style="background-color:white">
-        <div id="header">
+        <div id="header" class="page-header">
             <h1>~title~</h1>
-            <span>
-                <a href="d_1.html">Diaries</a>&nbsp;|&nbsp;
-                <a href="c_1.html">Chats</a>&nbsp;|&nbsp;
-                <a href="m_1.html">Memories</a>
-            </span>
-            <hr />
-            <span>
+        </div>
+        <div id="body">
+            <ul class="nav nav-tabs">
+                <li role="presentation" class="~dActive~">
+                    <a href="d_1.html">Diaries</a>
+                </li>
+                <li role="presentation" class="~cActive~">
+                    <a href="c_1.html">Chats</a>
+                </li>
+                <li role="presentation" class="~mActive~">
+                    <a href="m_1.html">Memories</a>
+                </li>
+            </ul>
+            <div class="pageNumber">
                 ~pageNumbers~
-            </span>
+            </div>
+            <br />
             <div id="itemList">
                 ~items~
             </div>
+            <br />
+            <div class="pageNumber">
+                ~pageNumbers~
+            </div>
+            <br />
         </div>
         <div id="footer">
-            <hr />
-            ~footContent~
+            <hr /> ~footContent~
         </div>
     </div>
 </body>

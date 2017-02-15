@@ -315,7 +315,7 @@ namespace LoveSave
             }
             string items = sb.ToString();
             _html = _html.Replace("~items~", items);
-            if (Kind=="m")
+            if (Kind == "m")
             {
                 _html = _html.Replace("#-->", "").Replace("<!--~", "");
             }
@@ -344,23 +344,80 @@ namespace LoveSave
             }
             _html = _html.Replace("~footContent~", Foot);
         }
-
         private void setPageNums()
         {
-            StringBuilder sb = new StringBuilder("<div id=\"pageNumbers\">|");
-            for (int i = 0; i < PageNum; i++)
+            StringBuilder sb = new StringBuilder();
+            string home = Kind + "_1.html";
+            //无变量
+            string navHead = "<nav aria-label=\"Page navigation\"><ul class=\"pagination\">";
+            sb.Append(navHead);
+            //同类首页url
+            string eleHead = $"<li><a href=\"{home}\" aria-label=\"Previous\"><span aria-hidden=\"true\">&laquo;</span></a></li>";
+            sb.Append(eleHead);
+            //当前页url,当前页是否active,当前页码
+            int[] showPage = GetFivePage(PageIndex);
+            for (int i = 0; i < showPage.Length; i++)
             {
-                int index = i + 1;
-                string src = $"{Kind}_{index}.html";
-                string aStr = Constant.A_BaseHtml.Replace("{HTTP}", src).Replace("{TEXT}", index.ToString());
-                sb.Append(aStr + "|");
+                string active = " class=\"active\"";
+                if (showPage[i] != PageIndex)
+                {
+                    active = "";
+                }
+                string cur = $"{Kind}_{showPage[i]}.html";
+                string eleString = $"<li{active}><a href=\"{cur}\">{showPage[i].ToString()}</a></li>";
+                sb.Append(eleString);
             }
-            sb.Append("</div>");
+            //同类尾页url
+            string foot = $"{Kind}_{PageNum}.html";
+            string eleFoot = $"<li><a href=\"{foot}\" aria-label=\"Next\"><span aria-hidden=\"true\">&raquo;</span></a></li>";
+            sb.Append(eleFoot);
+            //当前类型
+            string btnString = $"<div class=\"col-xs-4 col-sm-4 col-md-4  col-lg-4\"><div class=\"input-group\"><input class=\"form-control\" id=\"pnumber\" type=\"text\"><span class=\"input-group-btn\"><button type=\"button\" class=\"btn btn-default\" onclick=\"location.href='{Kind}_'+document.getElementById('pnumber').value+'.html';\">Go</button></span></div></div>";
+            sb.Append(btnString);
+            string navFoot = "</ul></nav>";
+            sb.Append(navFoot);
+            //组合完毕
             _html = _html.Replace("~pageNumbers~", sb.ToString());
+        }
+        private int[] GetFivePage(int index)
+        {
+            if (index < 3)
+            {
+                return new int[] { 1, 2, 3, 4, 5 };
+            }
+            if (index > PageNum - 2)
+            {
+                return new int[] { PageNum - 4, PageNum - 3, PageNum - 2, PageNum - 1, PageNum };
+            }
+            //3 ≤ index ≤ PageNum-2
+            return new int[] { index - 2, index - 1, index, index + 1, index + 2 };
+        }
+        private void setKind()
+        {
+            string forChange = "";
+            switch (Kind)
+            {
+                case "d":
+                    forChange = "~dActive~";
+                    break;
+                case "c":
+                    forChange = "~cActive~";
+                    break;
+                case "m":
+                    forChange = "~mActive~";
+                    break;
+                default:
+                    break;
+            }
+            if (forChange != "")
+            {
+                _html = _html.Replace(forChange, "active");
+            }
         }
 
         public string GetHtml()
         {
+            setKind();
             setPageNums();
             setCapital();
             setTitle();
@@ -368,6 +425,5 @@ namespace LoveSave
             setItems();
             return _html;
         }
-
     }
 }
