@@ -74,14 +74,14 @@ namespace LoveSave
                 #endregion
             }
         }
-        private string ReadHtml(string fileName)
-        {
-            StreamReader sr = new StreamReader(fileName, Encoding.UTF8);
-            string result = sr.ReadToEnd();
-            sr.Close();
-            sr.Dispose();
-            return result;
-        }
+        //private string ReadHtml(string fileName)
+        //{
+        //    StreamReader sr = new StreamReader(fileName, Encoding.UTF8);
+        //    string result = sr.ReadToEnd();
+        //    sr.Close();
+        //    sr.Dispose();
+        //    return result;
+        //}
         private void GetNecessary()
         {
             string url;
@@ -190,6 +190,7 @@ namespace LoveSave
                 string requestStr = e.Service.ToString() + e.Url.ToString();
                 if (requestStr.Contains("sweet_share_getbyhouse"))
                 {
+                    MessageBox.Show(e.Service.ToString()+";"+e.Url.ToString());
                     g_tk = RegexHelper.GetMatch(requestStr, "(?<=g_tk=)\\d*?(?=\\D)");
                     uin = RegexHelper.GetMatch(requestStr, "(?<=uin=)\\d*?(?=\\D)");
                     _NetCut.Uninstall();
